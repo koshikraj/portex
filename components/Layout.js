@@ -5,7 +5,7 @@ import Footer from './Footer';
 const Layout = (props) => {
   return (
     <>
-      <Menu toggleDarkMode={props.toggleDarkMode} />
+      <Menu toggleDarkMode={props.toggleDarkMode} connectUser={props.connectUser} provider={props.provider}/>
       <main>
       <div className='container'>{props.children}</div>
      </main>

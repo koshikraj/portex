@@ -111,14 +111,14 @@ const popoverContent = () => (
   </>
 );
 
-const Menu = ({ toggleDarkMode }) => {
-  console.log(toggleDarkMode);
+const Menu = ({ toggleDarkMode, connectUser, provider }) => {
+  console.log(provider)
+
   const classes = useStyles();
   const theme = useTheme();
   const router = useRouter();
   const [fixed, setFixed] = useState(false);
   const [tab, setTab] = useState(router.pathname);
-  console.log(tab);
   const isDark = theme.type === 'dark';
 
   useEffect(() => {
@@ -151,6 +151,14 @@ const Menu = ({ toggleDarkMode }) => {
               onClick={toggleDarkMode}
             >
               {isDark ? <Icons.Sun size={16} /> : <Icons.Moon size={16} />}
+            </Button>
+
+            <Button
+              auto
+              type='abort'
+              onClick={connectUser}
+            >
+            {provider ?  "Disconnect" : "Connect" }
             </Button>
             <Popover
               content={popoverContent}
