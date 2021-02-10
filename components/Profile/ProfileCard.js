@@ -108,7 +108,7 @@ const ProfileCard = ({ heading, created, repo, icon, address, name }) => {
         </div>
         <div className={classes.content}>
           <Dot type='success' className={classes.dot}>
-            <Link pure>{address}</Link>
+            <Link>{address}</Link>
             <Tag className={classes.tag} type='secondary'>
               Bitcoin
             </Tag>
