@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
   GeistUIThemes,
   Button,
@@ -7,9 +7,11 @@ import {
   Card,
   Dot,
   Tag,
+  User,
+  Input,
 } from '@geist-ui/react';
-import makeStyles from './makeStyles';
-
+import AddressModal from './AddressModal';
+import makeStyles from '../makeStyles';
 import * as Icons from 'react-feather';
 
 const useStyles = makeStyles((ui) => ({
@@ -81,6 +83,11 @@ const useStyles = makeStyles((ui) => ({
     alignItems: 'center !important',
     height: 50,
     width: '100% !important',
+    justifyContent: 'flex-end',
+  },
+  addressButton: {
+    display: 'flex !important',
+    alignItems: 'center !important',
   },
   repo: {
     fontSize: 14,
@@ -89,41 +96,40 @@ const useStyles = makeStyles((ui) => ({
   },
 }));
 
-const ProjectCard = ({ projectId, created, repo }) => {
+const ProfileCard = ({ heading, created, repo, icon, address, name }) => {
+  const [modal, setModal] = useState(false);
   const classes = useStyles();
-
   return (
     <>
+      <AddressModal modal={modal} setModal={setModal} />;
       <Card shadow className={classes.card}>
         <div className={classes.title}>
-          <Text h3>{projectId}</Text>
-          <Button className={classes.visitButton} size='small' auto>
-            Visit
-          </Button>
+          <Text h3>{heading}</Text>
         </div>
         <div className={classes.content}>
           <Dot type='success' className={classes.dot}>
-            <Link pure>{projectId}.vercel.app</Link>
+            <Link pure>{address}</Link>
             <Tag className={classes.tag} type='secondary'>
-              Production
+              Bitcoin
             </Tag>
-            <span className={classes.created}>{created}</span>
-          </Dot>
-          <Dot type='success' className={classes.dot}>
-            <Link pure>{projectId}-oa71gi2.vercel.app</Link>
-            <Tag className={classes.tag} type='secondary'>
-              Latest
-            </Tag>
-            <span className={classes.created}>{created}</span>
           </Dot>
         </div>
+
         <Card.Footer className={classes.footer}>
-          <Icons.GitHub size={14} />
-          <Text className={classes.repo}>{repo}</Text>
+          <Button
+            className={classes.addressButton}
+            size='small'
+            auto
+            icon={<Icons.Plus />}
+            type='secondary'
+            onClick={() => setModal(true)}
+          >
+            Add New Addess
+          </Button>
         </Card.Footer>
       </Card>
     </>
   );
 };
 
-export default ProjectCard;
+export default ProfileCard;
