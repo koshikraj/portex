@@ -154,18 +154,6 @@ const Content = () => {
               <Text className={classes.viewAll}>
                 <Link color>View My Profile Access Request lists</Link>
               </Text>
-
-              {/* remove this btn while integrating */}
-              <Button
-                className={classes.addressButton}
-                size='small'
-                auto
-                icon={<Icons.Plus />}
-                type='secondary'
-                onClick={() => setModal(true)}
-              >
-                Signup test Modal
-              </Button>
             </div>
           </div>
         </div>

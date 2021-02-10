@@ -173,8 +173,12 @@ const Menu = ({ toggleDarkMode, connectUser, provider }) => {
             }}
           >
             <Tabs.Item label='Overview' value='/' />
-            <Tabs.Item label='Profile' value='/profile' />
-            <Tabs.Item label='Settings' value='/settings' />
+            {/* replace path with :id -> /requests/:id */}
+            <Tabs.Item
+              label='Pending Request'
+              value='/requests/accessrequest'
+            />
+            <Tabs.Item label='My Profile' value='/profile' />
           </Tabs>
         </div>
       </nav>
