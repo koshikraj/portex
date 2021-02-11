@@ -8,16 +8,23 @@
     "start": "next start"
   },
   "dependencies": {
+    "@ceramicnetwork/http-client": "^0.9.6",
+    "@ceramicstudio/idx": "^0.7.0",
+    "@ceramicstudio/idx-tools": "^0.7.0",
     "@ethersproject/providers": "^5.0.5",
     "@geist-ui/react": "^2.1.0-canary.1",
+    "@stablelib/random": "^1.0.0",
     "bcryptjs": "^2.4.3",
+    "dids": "^1.1.1",
     "ethers": "^5.0.24",
+    "key-did-provider-ed25519": "^1.0.0",
     "next": "9.4.2",
     "react": "16.13.1",
     "react-dom": "16.13.1",
     "react-feather": "^2.0.9",
     "react-jss": "^10.5.1",
     "styled-jsx": "^3.2.5",
+    "uint8arrays": "^2.1.2",
     "web3modal": "^1.5.0"
   }
 }

@@ -4,6 +4,7 @@ import { GeistProvider, CssBaseline, useTheme } from '@geist-ui/react'
 import {getDefaultProvider, Web3Provider} from "@ethersproject/providers";
 import dynamic from "next/dynamic";
 import {generateSignature} from "../lib/signerConnect"
+import {generateIDX} from '../lib/ceramic'
 
 
 // const getDefaultTheme = () =>
@@ -14,7 +15,8 @@ function MyApp({ Component, pageProps }) {
   const [themeType, setThemeType] = useState('light');
   const [provider, setProvider] = useState(null);
   const toggleDarkMode = () => setThemeType(themeType === 'dark' ? 'light' : 'dark');
-
+  const [idx, setIdx] = useState(null);
+  const [ceramic, setCeramic] = useState(null);
   const [injectedProvider, setInjectedProvider] = useState();
 
   // if (window.matchMedia) {
@@ -23,10 +25,13 @@ function MyApp({ Component, pageProps }) {
   // }
 
 const connectUser = async () => {
-
   console.log('connect')
   const {seed, metamask} = await generateSignature();
   setProvider(metamask)
+  const {idx, ceramic} = await generateIDX(seed);
+  setIdx(idx)
+  setCeramic(ceramic)
+  console.log(idx,ceramic)
 }
 
 
@@ -35,7 +40,7 @@ pageProps['connectUser'] = connectUser
   return (
     <GeistProvider theme={{ type: themeType }}>
       <CssBaseline />
-      <Component {...pageProps} provider={provider} toggleDarkMode={toggleDarkMode} connectUser={connectUser}/>
+      <Component {...pageProps} provider={provider} toggleDarkMode={toggleDarkMode} connectUser={connectUser} />
     </GeistProvider>
   )
 }
