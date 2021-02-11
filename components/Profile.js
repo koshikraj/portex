@@ -1,10 +1,19 @@
 import React, { useState, useEffect } from 'react';
-import { GeistUIThemes, Avatar, Button, Text, Link } from '@geist-ui/react';
+import {
+  GeistUIThemes,
+  Avatar,
+  Button,
+  Text,
+  Link,
+  Row,
+  Loading,
+} from '@geist-ui/react';
 import makeStyles from './makeStyles';
 import * as Icons from 'react-feather';
 import ProfileCard from './Profile/ProfileCard';
-import {definitions} from '../utils/config.json'
-import {decryptData, encryptData} from "../lib/threadDb"
+import AddressModal from './Profile/AddressModal';
+import { definitions } from '../utils/config.json';
+import { decryptData, encryptData } from '../lib/threadDb';
 
 const useStyles = makeStyles((ui) => ({
   root: {
@@ -76,45 +85,56 @@ const useStyles = makeStyles((ui) => ({
 
 const Profile = ({ idx }) => {
   const classes = useStyles();
-
-  const [addressArray, setAddress] = useState([])
-  const [aesKey, setAesKey] = useState(null)
+  const [modal, setModal] = useState(false);
+  const [addressArray, setAddress] = useState([]);
+  const [aesKey, setAesKey] = useState(null);
 
   useEffect(() => {
-    async function fetch(){
-        try{
-            if(idx){
-                const res = JSON.parse(localStorage.getItem("USER"))
-                const dec = await idx.ceramic.did.decryptDagJWE(res.aesKey)
-                setAesKey(dec)
-                const [addressList] = await Promise.all([
-                idx.get(definitions.portfolio, idx.id)]);
-                console.log(addressList); 
-                const decryptedData = await decryptData(Buffer.from(addressList.portfolio, "hex"), dec);
-                console.log(JSON.parse(decryptedData.toString('utf8')))
-                addressList ? setAddress(JSON.parse(decryptedData.toString('utf8'))) : setAddress([])  
-
-            }
-        }catch(err){
-            console.log(err)
+    async function fetch() {
+      try {
+        if (idx) {
+          const res = JSON.parse(localStorage.getItem('USER'));
+          const dec = await idx.ceramic.did.decryptDagJWE(res.aesKey);
+          setAesKey(dec);
+          const [addressList] = await Promise.all([
+            idx.get(definitions.portfolio, idx.id),
+          ]);
+          console.log(addressList);
+          const decryptedData = await decryptData(
+            Buffer.from(addressList.portfolio, 'hex'),
+            dec
+          );
+          console.log(JSON.parse(decryptedData.toString('utf8')));
+          addressList
+            ? setAddress(JSON.parse(decryptedData.toString('utf8')))
+            : setAddress([]);
         }
+      } catch (err) {
+        console.log(err);
+      }
     }
-    fetch()
-}, [])
+    fetch();
+  }, []);
 
-const addAddress = async (newAddress) => {
-  const newAddresses = [...addressArray, newAddress];
-  const encryptedData = await encryptData(Buffer.from(JSON.stringify(newAddresses)), aesKey)
-  console.log(encryptedData)
-  setAddress(newAddresses)
-  const docId = await idx.set(definitions.portfolio, {
-    portfolio: encryptedData.toString("hex")
-  })
-  localStorage.setItem("docId",docId.toString())
-}
+  const addAddress = async (newAddress) => {
+    const newAddresses = [...addressArray, newAddress];
+
+    const encryptedData = await encryptData(
+      Buffer.from(JSON.stringify(newAddresses)),
+      aesKey
+    );
+    console.log(encryptedData);
+    setAddress(newAddresses);
+    const docId = await idx.set(definitions.portfolio, {
+      portfolio: encryptedData.toString('hex'),
+    });
+    localStorage.setItem('docId', docId.toString());
+  };
 
   return (
     <>
+      <AddressModal modal={modal} setModal={setModal} addAddress={addAddress} />
+
       <div className={classes.root}>
         <div className={classes.content}>
           <Avatar
@@ -131,8 +151,10 @@ const addAddress = async (newAddress) => {
                 className={classes.createProjectButton}
                 type='secondary'
                 auto
+                icon={<Icons.Plus />}
+                onClick={() => setModal(true)}
               >
-                Edit Profile
+                Add New Address
               </Button>
             </div>
             <div>
@@ -146,7 +168,6 @@ const addAddress = async (newAddress) => {
                 href='https://github.com/consensolabs'
                 target='_blank'
                 rel='noopener'
-                pure
                 underline
               >
                 <div style={{ display: 'flex', alignItems: 'center' }}></div>
@@ -155,32 +176,35 @@ const addAddress = async (newAddress) => {
           </div>
         </div>
       </div>
-
+      <div className={classes.content}>
+        <Text h4 className={classes.username}>
+          My Portfolio
+        </Text>
+      </div>
       <div className={classes.content}>
         <div className={classes.projects}>
-          {
-            addressArray.length>0 ? (
-              addressArray.map((add, index) => {
-                console.log(add)
-                return(
-                  <ProfileCard
-                    heading='Your Portfolio'
-                    address={add}
-                    name='Bitcoin'
-                    addAddress={addAddress}
-                    key={index}
-              />
-                )
-              })
-            ) : (<p>Loading....</p>)
-          }
-          <ProfileCard
-              heading='Your Portfolio'
-              address="add"
-              name='Bitcoin'
-              addAddress={addAddress}
-          />
-          
+          {addressArray.length > 0 ? (
+            addressArray.map((add, index) => {
+              console.log(add);
+              return (
+                <ProfileCard
+                  heading='Your Portfolio'
+                  address={add}
+                  name='Bitcoin'
+                  addAddress={addAddress}
+                  key={index}
+                />
+              );
+            })
+          ) : (
+            <Row style={{ padding: '10px 0' }}>
+              <Loading>Loading</Loading>
+            </Row>
+          )}
+          {/* remove this later */}
+          <ProfileCard address='add' name='Bitcoin' addAddress={addAddress} />
+          <ProfileCard address='add' name='Bitcoin' addAddress={addAddress} />
+          <ProfileCard address='add' name='Bitcoin' addAddress={addAddress} />
         </div>
       </div>
     </>

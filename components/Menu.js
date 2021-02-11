@@ -138,7 +138,10 @@ const Menu = ({ toggleDarkMode, connectUser, provider }) => {
       <div className={classes.header}>
         <div className={classes.headerContent}>
           <div style={{ display: 'flex' }}>
-            <div className={classes.headerTitle}> Portex</div>
+            <div className={classes.headerTitle}>
+              {' '}
+              <img src='/logo.png' alt='LOGO' />
+            </div>
           </div>
           <div className={classes.sidebar}>
             <Button

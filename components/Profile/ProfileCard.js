@@ -119,7 +119,7 @@ const ProfileCard = ({
 
   return (
     <>
-      <AddressModal modal={modal} setModal={setModal} addAddress={addAddress} />
+      {/* <AddressModal modal={modal} setModal={setModal} addAddress={addAddress} /> */}
 
       <Card shadow className={classes.card}>
         <div className={classes.title}>
@@ -137,19 +137,6 @@ const ProfileCard = ({
             <Tag style={{ marginLeft: '8px' }}>{name}</Tag>
           </div>
         </div>
-
-        <Card.Footer className={classes.footer}>
-          <Button
-            className={classes.addressButton}
-            size='small'
-            auto
-            icon={<Icons.Plus />}
-            type='secondary'
-            onClick={() => setModal(true)}
-          >
-            Add New Addess
-          </Button>
-        </Card.Footer>
       </Card>
     </>
   );
