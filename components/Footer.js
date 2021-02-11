@@ -9,29 +9,41 @@ const useStyles = makeStyles((ui) => ({
     textAlign: 'center',
     display: 'flex',
     flexdirection: 'row',
-    alignItems: 'center'
+    alignItems: 'center',
   },
   logo: {
     // border: `1px solid ${ui.palette.accents_2}`,
     borderRadius: '50% !important',
-    margin: '0 6px 0 0 !important'
+    margin: '0 6px 0 0 !important',
   },
   [`@media screen and (min-width: ${ui.layout.pageWidthWithMargin})`]: {
     root: {
-      textAlign: 'start !important'
-    }
-  }
+      textAlign: 'start !important',
+    },
+  },
 }));
 
 const Footer = () => {
   const classes = useStyles();
   return (
     <div className={classes.root}>
-      <Image className={classes.logo} src="/assets/geist.png" width={32} height={32} title="Geist Logo" />
+      <Image
+        className={classes.logo}
+        src='/assets/geist.png'
+        width={32}
+        height={32}
+        title='Geist Logo'
+      />
       <Text>
-        Made with{' '}
-        <Link href="https://github.com/geist-org" target="_blank" rel="noopener" pure underline>
-          Geist
+        &copy;2020_
+        <Link
+          href='https://github.com/geist-org'
+          target='_blank'
+          rel='noopener'
+          pure
+          underline
+        >
+          Portex
         </Link>
         .
       </Text>

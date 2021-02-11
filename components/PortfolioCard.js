@@ -46,6 +46,7 @@ const useStyles = makeStyles((ui) => ({
     marginTop: ui.layout.gapQuarter,
     '& .icon': {
       backgroundColor: '#50e3c2 !important',
+      color: `${ui.palette.accents_5} !important`,
     },
     '& .label': {
       textTransform: 'none !important',
@@ -63,6 +64,7 @@ const useStyles = makeStyles((ui) => ({
     },
     '& .link': {
       fontWeight: 500,
+      color: `${ui.palette.accents_5} !important`,
     },
   },
   tag: {
@@ -82,48 +84,41 @@ const useStyles = makeStyles((ui) => ({
     height: 50,
     width: '100% !important',
   },
-  repo: {
+  mail: {
     fontSize: 14,
     fontWeight: 500,
     marginLeft: '6px !important',
+    color: `${ui.palette.accents_5} !important`,
   },
 }));
 
-const ProjectCard = ({ projectId, created, repo }) => {
+const PortfolioCard = ({ name, created, email, address }) => {
   const classes = useStyles();
 
   return (
     <>
       <Card shadow className={classes.card}>
         <div className={classes.title}>
-          <Text h3>{projectId}</Text>
+          <Text h3>{name}</Text>
           <Button className={classes.visitButton} size='small' auto>
             Visit
           </Button>
         </div>
         <div className={classes.content}>
           <Dot type='success' className={classes.dot}>
-            <Link pure>{projectId}.vercel.app</Link>
-            <Tag className={classes.tag} type='secondary'>
-              Production
-            </Tag>
-            <span className={classes.created}>{created}</span>
+            <Link>{address}</Link>
           </Dot>
           <Dot type='success' className={classes.dot}>
-            <Link pure>{projectId}-oa71gi2.vercel.app</Link>
-            <Tag className={classes.tag} type='secondary'>
-              Latest
-            </Tag>
-            <span className={classes.created}>{created}</span>
+            <Link>{address}</Link>
           </Dot>
         </div>
         <Card.Footer className={classes.footer}>
-          <Icons.GitHub size={14} />
-          <Text className={classes.repo}>{repo}</Text>
+          <Icons.Mail size={14} />
+          <Text className={classes.mail}>{email}</Text>
         </Card.Footer>
       </Card>
     </>
   );
 };
 
-export default ProjectCard;
+export default PortfolioCard;

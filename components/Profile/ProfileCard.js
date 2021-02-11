@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   GeistUIThemes,
   Button,
@@ -13,11 +13,13 @@ import {
 import AddressModal from './AddressModal';
 import makeStyles from '../makeStyles';
 import * as Icons from 'react-feather';
+import { definitions } from '../../utils/config.json';
 
 const useStyles = makeStyles((ui) => ({
   card: {
     padding: '0 !important',
     marginBottom: `calc(${ui.layout.gap}*1.5) !important`,
+    width: '100%',
   },
   title: {
     display: 'flex',
@@ -46,6 +48,8 @@ const useStyles = makeStyles((ui) => ({
   dot: {
     display: 'flex !important',
     marginTop: ui.layout.gapQuarter,
+    overflow: 'hidden',
+    alignItems: 'center !important',
     '& .icon': {
       backgroundColor: '#50e3c2 !important',
     },
@@ -94,25 +98,44 @@ const useStyles = makeStyles((ui) => ({
     fontWeight: 500,
     marginLeft: '6px !important',
   },
+  avatar: {
+    width: '32px !important',
+    height: '32px !important',
+    marginRight: '10px !important',
+  },
 }));
 
-const ProfileCard = ({ heading, created, repo, icon, address, name }) => {
+const ProfileCard = ({
+  heading,
+  created,
+  repo,
+  icon,
+  address,
+  name,
+  addAddress,
+}) => {
   const [modal, setModal] = useState(false);
   const classes = useStyles();
+
   return (
     <>
-      <AddressModal modal={modal} setModal={setModal} />;
+      <AddressModal modal={modal} setModal={setModal} addAddress={addAddress} />
+
       <Card shadow className={classes.card}>
         <div className={classes.title}>
           <Text h3>{heading}</Text>
         </div>
         <div className={classes.content}>
-          <Dot type='success' className={classes.dot}>
-            <Link pure>{address}</Link>
-            <Tag className={classes.tag} type='secondary'>
-              Bitcoin
-            </Tag>
-          </Dot>
+          <div className={classes.dot}>
+            <img
+              className={classes.avatar}
+              src='/assets/avatar.png'
+              alt=''
+              srcset=''
+            />
+            <Link>{address}</Link>
+            <Tag style={{ marginLeft: '8px' }}>{name}</Tag>
+          </div>
         </div>
 
         <Card.Footer className={classes.footer}>
