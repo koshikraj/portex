@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { GeistUIThemes, Text, Link, Button, Select } from '@geist-ui/react';
+import { GeistUIThemes, Text, Link, Button, Select, Spinner, Row, Col } from '@geist-ui/react';
 import makeStyles from './makeStyles';
 import EventListItem from './EventListItem.js';
 import PortfolioCard from './PortfolioCard';
@@ -47,6 +47,18 @@ const useStyles = makeStyles((ui) => ({
   projects: {
     width: '100%',
   },
+  textRoot: {
+    borderBottom: `solid 1px ${ui.palette.accents_2}`,
+    padding: '10px 0px',
+    alignItems: 'center',
+    display: 'flex',
+    fontSize: 14,
+  },
+  message: {
+    fontSize: '14px !important',
+    margin: 0,
+    flex: 1,
+  },
   activity: {
     flex: 1,
   },
@@ -89,51 +101,49 @@ const useStyles = makeStyles((ui) => ({
   },
 }));
 
-const Content = ({idx}) => {
+const Content = ({idx, user, userData}) => {
 
   const [caller, setCaller] = useState(null)
   const [userArray, setUserArray] = useState([{}])
   const [selectedUser, setSelectedUser] = useState(0)
-  const [requested,setRequested] = useState([])
-  const [requests,setRequests] = useState([])
+  const [requested, setRequested] = useState([])
+  const [requests, setRequests] = useState([])
   const [sharedPortfolio, setSharedPortfolio] = useState([])
+  const [portfolioLoading, setPortfolioLoading] = useState(true)
 
   useEffect(()=>{
     async function load(){
+    
+      if (idx && user===2) {
+      setRequested(userData.requested)
+      setRequests(userData.requests)   
+      const userPortfolios = userData.sharedData 
+
       const user = JSON.parse(localStorage.getItem('USER'))
       const {userArray, caller} = await getAllUsers(user.did)
-      setCaller(caller)
+      console.log("caller",caller)
+      setCaller(userData)
       setUserArray(userArray)
-
-      const requestedArray = await getAllRequested(user.did)
-      //console.log("Array:",requestedArray)
-      setRequested(requestedArray)
-
-      const requests = await getAllRequests(user.did)
-      setRequests(requests)
-
-      const userPortfolios = await getSharedPortfolios(user.did)
-
-      let portfolios = []
-      if (idx) {
-        userPortfolios.map(async (value) => {
+      
+        let portfolios = await Promise.all(userPortfolios.map(async (value) => {
           const aesKey = await idx.ceramic.did.decryptDagJWE(value.encryptedKey)
           const encData = await idx.ceramic.loadDocument(value.documentId)
           const decryptedData = await decryptData(Buffer.from(encData._state.content.portfolio, "hex"), aesKey)
           const res = JSON.parse(decryptedData.toString("utf8"))
           console.log("Decryp:", res)
-          portfolios.push({
+          return {
             name: value.senderName,
             email: value.senderEmail,
             did: value.senderDid,
             portfolio: res
-          })
-        })
+          }
+        }))
         setSharedPortfolio(portfolios)
+        setPortfolioLoading(false)
       }
     }
     load()
-  },[idx])
+  },[idx, user])
 
   console.log("Port:",sharedPortfolio)
 
@@ -166,11 +176,12 @@ const Content = ({idx}) => {
       {/* testing purpose */}
       <div className={classes.root}>
         <div className={classes.content}>
-          <Text h3>Portfolio’s shared with me</Text>
+          <Text h3>All portfolios</Text>
           <div className={classes.row}>
             <div className={classes.projects}>
               {
-                sharedPortfolio.length>0 ?
+                ! portfolioLoading ?
+                (sharedPortfolio.length>0 ?
                     sharedPortfolio.map((value => {
                       return(
                           <PortfolioCard
@@ -180,7 +191,17 @@ const Content = ({idx}) => {
                           />
                       )
                     })) :
-                    <h3> No shared portfolio </h3>
+                    <Text>No shared portfolios</Text>)
+              :
+              <div>
+                <Row gap={.8} justify="center" style={{ marginBottom: '15px' }}>
+                  <Spinner size="large" />
+                </Row>
+                <Row gap={.8} justify="center" style={{ marginBottom: '15px' }}>
+                  <Text>Loading portfolios</Text>
+                </Row>
+
+              </div>
               }
             </div>
 
@@ -231,14 +252,14 @@ const Content = ({idx}) => {
                           </EventListItem>
                       )
                     })):
-                    <h5>No activity</h5>
+                    <Text className={classes.message}>No activity</Text>
               }
               <Text className={classes.viewAll}>
-                <Link color>View My Profile Access Request lists</Link>
+                <Link color>View more</Link>
               </Text>
 
               <Text h2 className={classes.activityTitle}>
-                Requests
+                All Requests
               </Text>
 
               {
@@ -260,7 +281,7 @@ const Content = ({idx}) => {
                           </EventListItem>
                       )
                     })):
-                    <h5>No requests</h5>
+                    <Text className={classes.message}>No requests</Text>
               }
             </div>
           </div>

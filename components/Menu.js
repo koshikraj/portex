@@ -10,6 +10,7 @@ import {
   Popover,
   Link,
 } from '@geist-ui/react';
+import Connect from './modals/Connect';
 import makeStyles from './makeStyles';
 import * as Icons from 'react-feather';
 
@@ -100,7 +101,7 @@ const popoverContent = () => (
       <Link>Teams</Link>
     </Popover.Item>
     <Popover.Item>
-      <Link href='/profile'>GitHub</Link>
+      <Link href='https://github.com/koshikraj/portex'>GitHub</Link>
     </Popover.Item>
     <Popover.Item line />
     <Popover.Item>
@@ -109,9 +110,9 @@ const popoverContent = () => (
   </>
 );
 
-const Menu = ({ toggleDarkMode, connectUser, provider }) => {
-  console.log(provider);
-
+const Menu = ({ toggleDarkMode, connectUser, provider, user }) => {
+  
+  const [modal, setModal] = useState(false);
   const classes = useStyles();
   const theme = useTheme();
   const router = useRouter();
@@ -135,6 +136,7 @@ const Menu = ({ toggleDarkMode, connectUser, provider }) => {
 
   return (
     <>
+      <Connect modal={modal} setModal={setModal} connectUser={connectUser} userConnected={user}/>
       <div className={classes.header}>
         <div className={classes.headerContent}>
           <div style={{ display: 'flex' }}>
@@ -158,8 +160,12 @@ const Menu = ({ toggleDarkMode, connectUser, provider }) => {
             >
               <Avatar text='CL' />
             </Popover>
-            <Button auto type='abort' onClick={connectUser}>
-              {provider ? 'Disconnect' : 'Connect'}
+            <Button
+              auto
+              type='abort'
+              onClick={setModal}
+            >
+            {provider ?  "Disconnect" : "Connect" }
             </Button>
           </div>
         </div>

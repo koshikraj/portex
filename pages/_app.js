@@ -21,6 +21,7 @@ function MyApp({ Component, pageProps }) {
   const [ceramic, setCeramic] = useState(null);
   const [injectedProvider, setInjectedProvider] = useState();
   const [user, setUser] = useState(0);
+  const [userData, setUserData] =useState([]);
   // if (window.matchMedia) {
   //   const colorSchemeQuery = window.matchMedia('(prefers-color-scheme: dark)');
   //   colorSchemeQuery.onchange = (e) => setThemeType(e.matches ? 'dark' : 'light');
@@ -34,8 +35,13 @@ const connectUser = async () => {
   setIdx(idx)
   setCeramic(ceramic)
   const threadData = await getLoginUser(idx.id)
+  if(!localStorage.getItem("USER")) {
+  localStorage.setItem("USER", JSON.stringify(threadData))
+  }
   const data = await idx.get(definitions.profile, idx.id)
+  setUserData(threadData)
   setUser((threadData && data) ? 2 : 1)
+  
 }
 
 
@@ -44,7 +50,7 @@ pageProps['connectUser'] = connectUser
   return (
     <GeistProvider theme={{ type: themeType }}>
       <CssBaseline />
-      <Component {...pageProps} provider={provider} toggleDarkMode={toggleDarkMode} connectUser={connectUser} user={user} idx={idx}/>
+      <Component {...pageProps} provider={provider} toggleDarkMode={toggleDarkMode} connectUser={connectUser} user={user} idx={idx} userData={userData}/>
     </GeistProvider>
   )
 }

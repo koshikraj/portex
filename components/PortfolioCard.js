@@ -108,9 +108,6 @@ const PortfolioCard = ({ name, created, email, address }) => {
           <Dot type='success' className={classes.dot}>
             <Link>{address}</Link>
           </Dot>
-          <Dot type='success' className={classes.dot}>
-            <Link>{address}</Link>
-          </Dot>
         </div>
         <Card.Footer className={classes.footer}>
           <Icons.Mail size={14} />

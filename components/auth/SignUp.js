@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Button, Modal, Input } from '@geist-ui/react';
 import * as Icons from 'react-feather';
 import makeStyles from '../makeStyles';
@@ -20,13 +20,17 @@ const useStyles = makeStyles((ui) => ({
   },
 }));
 
-function SignUp({ status, idx }) {
+function SignUp({ user, idx }) {
   
   const [email, setEmail] = useState('');
   const [name, setName] = useState('')
-  const [modal, setModal] = useState(Boolean(status))
+  const [modal, setModal] = useState(false)
   const [loading, setLoading] = useState(false)
-  //    const [modal, setModal] = useState(true);
+  
+  useEffect(() => {
+    setModal(user === 1)
+  }, [user] ) 
+
   const closeHandler = (event) => {
     setModal(false);
   };
@@ -62,7 +66,7 @@ function SignUp({ status, idx }) {
 
   return (
     <>
-      <Modal open={status || modal} onClose={closeHandler}>
+      <Modal open={modal} onClose={closeHandler}>
         <Modal.Title>Sign up </Modal.Title>
 
         <Modal.Content>
