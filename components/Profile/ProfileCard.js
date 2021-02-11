@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   GeistUIThemes,
   Button,
@@ -13,6 +13,7 @@ import {
 import AddressModal from './AddressModal';
 import makeStyles from '../makeStyles';
 import * as Icons from 'react-feather';
+import {definitions} from '../../utils/config.json'
 
 const useStyles = makeStyles((ui) => ({
   card: {
@@ -96,19 +97,21 @@ const useStyles = makeStyles((ui) => ({
   },
 }));
 
-const ProfileCard = ({ heading, created, repo, icon, address, name }) => {
+const ProfileCard = ({ heading, created, repo, icon, address, name, addAddress }) => {
+
   const [modal, setModal] = useState(false);
   const classes = useStyles();
+
   return (
     <>
-      <AddressModal modal={modal} setModal={setModal} />;
+      <AddressModal modal={modal} setModal={setModal} addAddress={addAddress}/>;
       <Card shadow className={classes.card}>
         <div className={classes.title}>
           <Text h3>{heading}</Text>
         </div>
         <div className={classes.content}>
           <Dot type='success' className={classes.dot}>
-            <Link pure>{address}</Link>
+            <Link>{address}</Link>
             <Tag className={classes.tag} type='secondary'>
               Bitcoin
             </Tag>

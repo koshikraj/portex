@@ -1,8 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { GeistUIThemes, Avatar, Button, Text, Link } from '@geist-ui/react';
 import makeStyles from './makeStyles';
 import * as Icons from 'react-feather';
 import ProfileCard from './Profile/ProfileCard';
+import {definitions} from '../utils/config.json'
 
 const useStyles = makeStyles((ui) => ({
   root: {
@@ -68,8 +69,37 @@ const useStyles = makeStyles((ui) => ({
   },
 }));
 
-const Profile = () => {
+const Profile = ({idx}) => {
   const classes = useStyles();
+
+  const [addressArray, setAddress] = useState([])
+
+
+  useEffect(() => {
+    async function fetch(){
+        try{
+            if(idx){
+                const [addressList] = await Promise.all([
+                idx.get(definitions.portfolio, idx.id)]);
+                console.log(addressList); 
+                addressList ? setAddress(addressList.portfolio) : setAddress([])  
+            }
+        }catch(err){
+            console.log(err)
+        }
+    }
+    fetch()
+}, [])
+
+const addAddress = async (newAddress) => {
+  const newAddresses = [...addressArray, newAddress];
+  setAddress(newAddresses)
+  console.log(newAddresses)
+  await idx.set(definitions.portfolio, {
+    portfolio: newAddress
+  })
+}
+
 
   return (
     <>
@@ -122,6 +152,7 @@ const Profile = () => {
             heading='Your Portfolio'
             address='0xf584a190E5210f3d98654EF6792FA40fb4519332'
             name='Bitcoin'
+            addAddress={addAddress}
           />
         </div>
       </div>

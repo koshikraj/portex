@@ -5,6 +5,8 @@ import {getDefaultProvider, Web3Provider} from "@ethersproject/providers";
 import dynamic from "next/dynamic";
 import {generateSignature} from "../lib/signerConnect"
 import {generateIDX} from '../lib/identity'
+import {definitions} from '../utils/config.json'
+import { getLoginUser } from '../lib/threadDb';
 
 
 // const getDefaultTheme = () =>
@@ -18,7 +20,7 @@ function MyApp({ Component, pageProps }) {
   const [idx, setIdx] = useState(null);
   const [ceramic, setCeramic] = useState(null);
   const [injectedProvider, setInjectedProvider] = useState();
-
+  const [user, setUser] = useState(0);
   // if (window.matchMedia) {
   //   const colorSchemeQuery = window.matchMedia('(prefers-color-scheme: dark)');
   //   colorSchemeQuery.onchange = (e) => setThemeType(e.matches ? 'dark' : 'light');
@@ -31,7 +33,9 @@ const connectUser = async () => {
   const {idx, ceramic} = await generateIDX(seed);
   setIdx(idx)
   setCeramic(ceramic)
-  console.log(idx,ceramic)
+  const threadData = await getLoginUser(idx.id)
+  const data = await idx.get(definitions.profile, idx.id)
+  setUser((threadData && data) ? 2 : 1)
 }
 
 
@@ -40,7 +44,7 @@ pageProps['connectUser'] = connectUser
   return (
     <GeistProvider theme={{ type: themeType }}>
       <CssBaseline />
-      <Component {...pageProps} provider={provider} toggleDarkMode={toggleDarkMode} connectUser={connectUser} />
+      <Component {...pageProps} provider={provider} toggleDarkMode={toggleDarkMode} connectUser={connectUser} user={user} idx={idx}/>
     </GeistProvider>
   )
 }

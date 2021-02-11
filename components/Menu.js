@@ -97,22 +97,20 @@ const popoverContent = () => (
       <span>User Settings</span>
     </Popover.Item>
     <Popover.Item>
-      <Link pure>Teams</Link>
+      <Link>Teams</Link>
     </Popover.Item>
     <Popover.Item>
-      <Link pure href='/profile'>
-        GitHub
-      </Link>
+      <Link href='/profile'>GitHub</Link>
     </Popover.Item>
     <Popover.Item line />
     <Popover.Item>
-      <Link pure>Logout</Link>
+      <Link>Logout</Link>
     </Popover.Item>
   </>
 );
 
 const Menu = ({ toggleDarkMode, connectUser, provider }) => {
-  console.log(provider)
+  console.log(provider);
 
   const classes = useStyles();
   const theme = useTheme();
@@ -153,13 +151,6 @@ const Menu = ({ toggleDarkMode, connectUser, provider }) => {
               {isDark ? <Icons.Sun size={16} /> : <Icons.Moon size={16} />}
             </Button>
 
-            <Button
-              auto
-              type='abort'
-              onClick={connectUser}
-            >
-            {provider ?  "Disconnect" : "Connect" }
-            </Button>
             <Popover
               content={popoverContent}
               placement='bottomEnd'
@@ -167,6 +158,9 @@ const Menu = ({ toggleDarkMode, connectUser, provider }) => {
             >
               <Avatar text='CL' />
             </Popover>
+            <Button auto type='abort' onClick={connectUser}>
+              {provider ? 'Disconnect' : 'Connect'}
+            </Button>
           </div>
         </div>
       </div>
@@ -179,8 +173,12 @@ const Menu = ({ toggleDarkMode, connectUser, provider }) => {
             }}
           >
             <Tabs.Item label='Overview' value='/' />
-            <Tabs.Item label='Profile' value='/profile' />
-            <Tabs.Item label='Settings' value='/settings' />
+            {/* replace path with :id -> /requests/:id */}
+            <Tabs.Item
+              label='Pending Request'
+              value='/requests/accessrequest'
+            />
+            <Tabs.Item label='My Profile' value='/profile' />
           </Tabs>
         </div>
       </nav>
