@@ -44,7 +44,7 @@ const PortfolioSchema = {
     $schema: 'http://json-schema.org/draft-07/schema#',
     properties: {
       portfolio: {
-        type: 'object',
+        type: 'string',
         title: 'portfolio',
       },
     },

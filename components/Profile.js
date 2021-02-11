@@ -3,7 +3,8 @@ import { GeistUIThemes, Avatar, Button, Text, Link } from '@geist-ui/react';
 import makeStyles from './makeStyles';
 import * as Icons from 'react-feather';
 import ProfileCard from './Profile/ProfileCard';
-import { definitions } from '../utils/config.json';
+import {definitions} from '../utils/config.json'
+import {decryptData, encryptData} from "../lib/threadDb"
 
 const useStyles = makeStyles((ui) => ({
   root: {
@@ -76,33 +77,40 @@ const useStyles = makeStyles((ui) => ({
 const Profile = ({ idx }) => {
   const classes = useStyles();
 
-  const [addressArray, setAddress] = useState([]);
+  const [addressArray, setAddress] = useState([])
+  const [aesKey, setAesKey] = useState(null)
 
   useEffect(() => {
-    async function fetch() {
-      try {
-        if (idx) {
-          const [addressList] = await Promise.all([
-            idx.get(definitions.portfolio, idx.id),
-          ]);
-          console.log(addressList);
-          addressList ? setAddress(addressList.portfolio) : setAddress([]);
-        }
-      } catch (err) {
-        console.log(err);
-      }
-    }
-    fetch();
-  }, []);
+    async function fetch(){
+        try{
+            if(idx){
+                const res = JSON.parse(localStorage.getItem("USER"))
+                const dec = await idx.ceramic.did.decryptDagJWE(res.aesKey)
+                setAesKey(dec)
+                const [addressList] = await Promise.all([
+                idx.get(definitions.portfolio, idx.id)]);
+                console.log(addressList); 
+                const decryptedData = await decryptData(Buffer.from(addressList.portfolio, "hex"), dec);
+                console.log(JSON.parse(decryptedData.toString('utf8')))
+                addressList ? setAddress(JSON.parse(decryptedData.toString('utf8'))) : setAddress([])  
 
-  const addAddress = async (newAddress) => {
-    const newAddresses = [...addressArray, newAddress];
-    setAddress(newAddresses);
-    console.log(newAddresses);
-    await idx.set(definitions.portfolio, {
-      portfolio: newAddress,
-    });
-  };
+            }
+        }catch(err){
+            console.log(err)
+        }
+    }
+    fetch()
+}, [])
+
+const addAddress = async (newAddress) => {
+  const newAddresses = [...addressArray, newAddress];
+  const encryptedData = await encryptData(Buffer.from(JSON.stringify(newAddresses)), aesKey)
+  console.log(encryptedData)
+  setAddress(newAddresses)
+  await idx.set(definitions.portfolio, {
+    portfolio: encryptedData.toString("hex")
+  })
+}
 
   return (
     <>
@@ -149,12 +157,23 @@ const Profile = ({ idx }) => {
 
       <div className={classes.content}>
         <div className={classes.projects}>
-          <ProfileCard
-            heading='Your Portfolio'
-            address='0xf584a190E5210f3d98654EF6792FA40fb4519332'
-            name='Bitcoin'
-            addAddress={addAddress}
-          />
+          {
+            addressArray.length>0 ? (
+              addressArray.map((add, index) => {
+                console.log(add)
+                return(
+                  <ProfileCard
+                    heading='Your Portfolio'
+                    address={add}
+                    name='Bitcoin'
+                    addAddress={addAddress}
+                    key={index}
+              />
+                )
+              })
+            ) : (<p>Loading....</p>)
+          }
+          
         </div>
       </div>
     </>
