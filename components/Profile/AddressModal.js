@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Button, Modal, Input } from '@geist-ui/react';
+import { Button, Modal, Input, Select } from '@geist-ui/react';
 import * as Icons from 'react-feather';
 import makeStyles from '../../components/makeStyles';
 const useStyles = makeStyles((ui) => ({
@@ -17,23 +17,18 @@ const useStyles = makeStyles((ui) => ({
   },
 }));
 
-
-
 function AddressModal({ modal, setModal, addAddress }) {
-
-
   const [newAddress, setNewAddress] = useState('');
   const closeHandler = (event) => {
     setModal(false);
   };
 
-
   const handleSubmit = () => {
-    if(!newAddress) return;
-    console.log(newAddress)
-    addAddress(newAddress).then(console.log("done"));
-    setNewAddress("")
-}
+    if (!newAddress) return;
+    console.log(newAddress);
+    addAddress(newAddress).then(console.log('done'));
+    setNewAddress('');
+  };
   const classes = useStyles();
 
   return (
@@ -50,6 +45,12 @@ function AddressModal({ modal, setModal, addAddress }) {
                 value={newAddress}
                 onChange={(e) => setNewAddress(e.target.value)}
               />
+            </div>
+            <div className={classes.input}>
+              <Select placeholder='Select Coin' className={classes.inputField}>
+                <Select.Option value='1'>Option 1</Select.Option>
+                <Select.Option value='2'>Option 2</Select.Option>
+              </Select>
             </div>
           </div>
         </Modal.Content>
