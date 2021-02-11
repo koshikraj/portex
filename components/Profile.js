@@ -3,7 +3,7 @@ import { GeistUIThemes, Avatar, Button, Text, Link } from '@geist-ui/react';
 import makeStyles from './makeStyles';
 import * as Icons from 'react-feather';
 import ProfileCard from './Profile/ProfileCard';
-import {definitions} from '../utils/config.json'
+import { definitions } from '../utils/config.json';
 
 const useStyles = makeStyles((ui) => ({
   root: {
@@ -52,9 +52,8 @@ const useStyles = makeStyles((ui) => ({
     },
   },
   projects: {
-    width: 540,
+    width: '1040px !important',
     maxWidth: '100%',
-    marginRight: 80,
   },
   integrationsTitle: {
     textTransform: 'uppercase',
@@ -67,39 +66,43 @@ const useStyles = makeStyles((ui) => ({
     margin: '0 0 0 4px',
     fontWeight: 0,
   },
+  crypto: {
+    width: '50px !important',
+    height: '50px !important',
+    marginRight: '25px !important',
+  },
 }));
 
-const Profile = ({idx}) => {
+const Profile = ({ idx }) => {
   const classes = useStyles();
 
-  const [addressArray, setAddress] = useState([])
-
+  const [addressArray, setAddress] = useState([]);
 
   useEffect(() => {
-    async function fetch(){
-        try{
-            if(idx){
-                const [addressList] = await Promise.all([
-                idx.get(definitions.portfolio, idx.id)]);
-                console.log(addressList); 
-                addressList ? setAddress(addressList.portfolio) : setAddress([])  
-            }
-        }catch(err){
-            console.log(err)
+    async function fetch() {
+      try {
+        if (idx) {
+          const [addressList] = await Promise.all([
+            idx.get(definitions.portfolio, idx.id),
+          ]);
+          console.log(addressList);
+          addressList ? setAddress(addressList.portfolio) : setAddress([]);
         }
+      } catch (err) {
+        console.log(err);
+      }
     }
-    fetch()
-}, [])
+    fetch();
+  }, []);
 
-const addAddress = async (newAddress) => {
-  const newAddresses = [...addressArray, newAddress];
-  setAddress(newAddresses)
-  console.log(newAddresses)
-  await idx.set(definitions.portfolio, {
-    portfolio: newAddress
-  })
-}
-
+  const addAddress = async (newAddress) => {
+    const newAddresses = [...addressArray, newAddress];
+    setAddress(newAddresses);
+    console.log(newAddresses);
+    await idx.set(definitions.portfolio, {
+      portfolio: newAddress,
+    });
+  };
 
   return (
     <>
@@ -124,9 +127,12 @@ const addAddress = async (newAddress) => {
               </Button>
             </div>
             <div>
-              <Text className={classes.integrationsTitle}>
-                Git Integrations{' '}
-              </Text>
+              <div style={{ display: 'flex', alignItems: 'center' }}>
+                <Icons.Mail size={16} aria-label='Email' />
+                <Text className={classes.integrationsUsername}>
+                  Koushith97@gmail.com
+                </Text>
+              </div>
               <Link
                 href='https://github.com/consensolabs'
                 target='_blank'
@@ -134,12 +140,7 @@ const addAddress = async (newAddress) => {
                 pure
                 underline
               >
-                <div style={{ display: 'flex', alignItems: 'center' }}>
-                  <Icons.Mail size={16} aria-label='Email' />
-                  <Text className={classes.integrationsUsername}>
-                    Koushith97@gmail.com
-                  </Text>
-                </div>
+                <div style={{ display: 'flex', alignItems: 'center' }}></div>
               </Link>
             </div>
           </div>

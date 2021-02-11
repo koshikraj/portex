@@ -138,7 +138,7 @@ const Menu = ({ toggleDarkMode, connectUser, provider }) => {
       <div className={classes.header}>
         <div className={classes.headerContent}>
           <div style={{ display: 'flex' }}>
-            <div className={classes.headerTitle}> Portify</div>
+            <div className={classes.headerTitle}> Portex</div>
           </div>
           <div className={classes.sidebar}>
             <Button
