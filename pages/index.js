@@ -10,7 +10,7 @@ const Home = (props) => {
         <JssProvider id={{ minify: true }}>
         <Layout toggleDarkMode={props.toggleDarkMode} connectUser={props.connectUser} provider={props.provider} user={props.user}>
             <SignUp status={props.user === 1} idx={props.idx}/>
-            <Dashboard/>
+            <Dashboard idx={props.idx}/>
         </Layout>
         </JssProvider>
     )

@@ -14,7 +14,7 @@ import makeStyles from '../../components/makeStyles';
 import { JssProvider } from 'react-jss';
 import Layout from '../../components/Layout';
 import EventListItem from '../../components/EventListItem';
-import ProjectCard from '../../components/ProjectCard';
+import PortfolioCard from '../../components/PortfolioCard';
 
 import * as Icons from 'react-feather';
 const useStyles = makeStyles((ui) => ({

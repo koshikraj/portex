@@ -4,10 +4,10 @@ import Heading from './Profile';
 import Content from './Content';
 import Footer from './Footer';
 
-const Dashboard = ({ toggleDarkMode }) => {
+const Dashboard = ({ toggleDarkMode,idx }) => {
   return (
     <>
-      <Content />
+      <Content idx={idx}/>
     </>
   );
 };

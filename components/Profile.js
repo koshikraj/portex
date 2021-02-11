@@ -107,9 +107,10 @@ const addAddress = async (newAddress) => {
   const encryptedData = await encryptData(Buffer.from(JSON.stringify(newAddresses)), aesKey)
   console.log(encryptedData)
   setAddress(newAddresses)
-  await idx.set(definitions.portfolio, {
+  const docId = await idx.set(definitions.portfolio, {
     portfolio: encryptedData.toString("hex")
   })
+  localStorage.setItem("docId",docId.toString())
 }
 
   return (
@@ -173,6 +174,12 @@ const addAddress = async (newAddress) => {
               })
             ) : (<p>Loading....</p>)
           }
+          <ProfileCard
+              heading='Your Portfolio'
+              address="add"
+              name='Bitcoin'
+              addAddress={addAddress}
+          />
           
         </div>
       </div>

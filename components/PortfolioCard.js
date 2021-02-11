@@ -92,7 +92,7 @@ const useStyles = makeStyles((ui) => ({
   },
 }));
 
-const ProjectCard = ({ name, created, email, address }) => {
+const PortfolioCard = ({ name, created, email, address }) => {
   const classes = useStyles();
 
   return (
@@ -121,4 +121,4 @@ const ProjectCard = ({ name, created, email, address }) => {
   );
 };
 
-export default ProjectCard;
+export default PortfolioCard;

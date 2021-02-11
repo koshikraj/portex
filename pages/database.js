@@ -13,9 +13,10 @@ export default function database(){
             did: {type:'string'},
             name: {type: 'string'},
             email: {type: 'string'},
-            sharedWith: {type:'array'},
-            requests: {type:'array'},
-            sharedData: {type:'array'},
+            sharedWith: {type:'array'},     // contains user with whom data is shared
+            requests: {type:'array'},       // contains all incoming requests
+            sharedData: {type:'array'},     // contains all shared portfolios
+            requested: {type:'array'},      // contains all outgoing requests
             aesKey: {type:'object'}
         },
     }
