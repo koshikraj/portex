@@ -47,6 +47,7 @@ const useStyles = makeStyles((ui) => ({
   },
   username: {
     lineHeight: 1,
+    height: 'fit-content',
   },
   integrationsTitle: {
     textTransform: 'uppercase',
@@ -109,7 +110,7 @@ const useStyles = makeStyles((ui) => ({
 
   projects: {
     // width: '1040px !important',
-    width: 'auto',
+    width: '80%',
     maxWidth: '100%',
   },
   modalContent: {
