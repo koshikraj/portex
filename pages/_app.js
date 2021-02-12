@@ -1,12 +1,10 @@
-import React, { useCallback, useState } from 'react'
-import useDomClean from '../lib/use-dom-clean'
-import { GeistProvider, CssBaseline, useTheme } from '@geist-ui/react'
-import {getDefaultProvider, Web3Provider} from "@ethersproject/providers";
-import dynamic from "next/dynamic";
+import React, {useState} from 'react'
+import {CssBaseline, GeistProvider} from '@geist-ui/react'
 import {generateSignature} from "../lib/signerConnect"
 import {generateIDX} from '../lib/identity'
 import {definitions} from '../utils/config.json'
-import { getLoginUser } from '../lib/threadDb';
+import {getLoginUser, loginUserWithChallenge} from '../lib/threadDb';
+import {PrivateKey} from "@textile/hub";
 
 
 // const getDefaultTheme = () =>
@@ -22,6 +20,7 @@ function MyApp({ Component, pageProps }) {
   const [injectedProvider, setInjectedProvider] = useState();
   const [user, setUser] = useState(0);
   const [userData, setUserData] =useState([]);
+  const [identity, setIdentity] = useState(null);
   // if (window.matchMedia) {
   //   const colorSchemeQuery = window.matchMedia('(prefers-color-scheme: dark)');
   //   colorSchemeQuery.onchange = (e) => setThemeType(e.matches ? 'dark' : 'light');
@@ -33,13 +32,20 @@ const connectUser = async () => {
   setProvider(metamask)
   const {idx, ceramic} = await generateIDX(seed);
   setIdx(idx)
-  setCeramic(ceramic)
-  const threadData = await getLoginUser(idx.id)
-  if(!localStorage.getItem("USER")) {
-  localStorage.setItem("USER", JSON.stringify(threadData))
+
+  const identity = PrivateKey.fromRawEd25519Seed(Uint8Array.from(seed))
+  setIdentity(identity)
+  let threadData = null
+  const client = await loginUserWithChallenge(identity);
+  if (client !== null) {
+    //call middleWare
+    setCeramic(ceramic)
+    threadData = await getLoginUser(idx.id)
+    if (!localStorage.getItem("USER")) {
+      localStorage.setItem("USER", JSON.stringify(threadData))
+    }
   }
   const data = await idx.get(definitions.profile, idx.id)
-  console.log(data)
   setUserData(threadData)
   setUser((threadData && data) ? 2 : 1)
   
@@ -51,7 +57,16 @@ pageProps['connectUser'] = connectUser
   return (
     <GeistProvider theme={{ type: themeType }}>
       <CssBaseline />
-      <Component {...pageProps} provider={provider} toggleDarkMode={toggleDarkMode} connectUser={connectUser} user={user} idx={idx} userData={userData}/>
+      <Component
+          {...pageProps}
+          provider={provider}
+          toggleDarkMode={toggleDarkMode}
+          connectUser={connectUser}
+          user={user}
+          idx={idx}
+          userData={userData}
+          identity={identity}
+      />
     </GeistProvider>
   )
 }
