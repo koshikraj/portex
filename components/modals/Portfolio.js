@@ -39,6 +39,7 @@ const useStyles = makeStyles((ui) => ({
     flexDirection: 'column',
     justifyContent: 'space-between',
     flex: 1,
+    height: 'fit-content !important',
   },
   title: {
     display: 'flex',
@@ -47,7 +48,7 @@ const useStyles = makeStyles((ui) => ({
   },
   username: {
     lineHeight: 1,
-    height: 'fit-content',
+    height: 'fit-content !important',
   },
   integrationsTitle: {
     textTransform: 'uppercase',
