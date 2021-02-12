@@ -1,5 +1,14 @@
 import React, { useEffect, useState } from 'react';
-import { Avatar, Card, Modal, Row, Snippet, Spinner, Tag, Text } from '@geist-ui/react';
+import {
+  Avatar,
+  Card,
+  Modal,
+  Row,
+  Snippet,
+  Spinner,
+  Tag,
+  Text,
+} from '@geist-ui/react';
 import * as Icons from 'react-feather';
 import makeStyles from '../makeStyles';
 
@@ -11,7 +20,7 @@ const useStyles = makeStyles((ui) => ({
     flexDirection: 'row',
     width: ui.layout.pageWidthWithMargin,
     maxWidth: '100%',
-    padding: `calc(${ui.layout.gap} * 2) ${ui.layout.pageMargin} calc(${ui.layout.gap} * 4)`,
+    padding: `calc(${ui.layout.gap} * 2) `,
     boxSizing: 'border-box',
     margin: '0 auto',
   },
@@ -58,7 +67,7 @@ const useStyles = makeStyles((ui) => ({
   card: {
     padding: '0 !important',
     marginBottom: `calc(${ui.layout.gap}*1.5) !important`,
-    width: 'auto',
+    width: 'auto !important',
   },
   dot: {
     display: 'flex !important',
@@ -109,105 +118,127 @@ const useStyles = makeStyles((ui) => ({
   inputField: {
     width: '310px !important',
   },
+  projects: {
+    // width: '1040px !important',
+    width: 'auto',
+    maxWidth: '100%',
+  },
+  modalContent: {
+    border: '1px solid red',
+    padding: '20px',
+  },
 }));
 
 function Portfolio({ state, idx, portfolio, user }) {
-  
   const [portfolioData, setPortfolioData] = useState({});
-  const [modal, setModal ] = useState(false);
-  const [loading, setLoading ] = useState(true);
-  
+  const [modal, setModal] = useState(false);
+  const [loading, setLoading] = useState(true);
+
   useEffect(() => {
-     async function loadPortfolio() {   
-       
-       if (idx && portfolio.documentId) {
-         console.log(idx)
-          const aesKey = await idx.ceramic.did.decryptDagJWE(portfolio.encryptedKey)
-          const encData = await idx.ceramic.loadDocument(portfolio.documentId)
-          const decryptedData = await decryptData(Buffer.from(encData._state.content.portfolio, "hex"), aesKey)
-          const res = JSON.parse(decryptedData.toString("utf8"))
-          console.log("Decryp:", res)
-          setPortfolioData (  
-          { name: portfolio.senderName,
-            email: portfolio.senderEmail,
-            did: portfolio.senderDid,
-            portfolio: res
-          }
-        )
+    async function loadPortfolio() {
+      if (idx && portfolio.documentId) {
+        console.log(idx);
+        const aesKey = await idx.ceramic.did.decryptDagJWE(
+          portfolio.encryptedKey
+        );
+        const encData = await idx.ceramic.loadDocument(portfolio.documentId);
+        const decryptedData = await decryptData(
+          Buffer.from(encData._state.content.portfolio, 'hex'),
+          aesKey
+        );
+        const res = JSON.parse(decryptedData.toString('utf8'));
+        console.log('Decryp:', res);
+        setPortfolioData({
+          name: portfolio.senderName,
+          email: portfolio.senderEmail,
+          did: portfolio.senderDid,
+          portfolio: res,
+        });
         setLoading(false);
-       }
-        setModal(state)
-     }
-     loadPortfolio();
-  }, [state, idx, portfolio] ) 
+      }
+      setModal(state);
+    }
+    loadPortfolio();
+  }, [state, idx, portfolio]);
 
   const closeHandler = (event) => {
     setModal(false);
   };
   const classes = useStyles();
 
-
-
   return (
     <>
-      <Modal width={"100"} height={"auto"} open={modal} onClose={closeHandler}>
+      <Modal width={'55%'} height={'auto'} open={modal} onClose={closeHandler}>
         <Modal.Title>User portfolio </Modal.Title>
 
-        <Modal.Content>
-        <div>
-            { loading ? <div>
-            <Row gap={.8} justify="center" style={{ marginBottom: '15px' }}>
-                   <Spinner size="large" />
-                   </Row>
-              <Row gap={.8} justify="center" style={{ marginBottom: '15px' }}>
-                   <Text>Loading portfolios</Text>
-              </Row>
-              </div> :
-              <>
-                            <div className={classes.content}>
-            <Avatar
-              alt='Your Avatar'
-              className={classes.avatar}
-              src='/assets/avatar.png'
-            />
-            <div className={classes.name}>
-              <div className={classes.title}>
-                <Text h2 className={classes.username}>
-                  {portfolioData.name}
-                </Text>
-              </div>
+        <Modal.Content className={classes.modalContent}>
+          <div>
+            {loading ? (
               <div>
-                <div style={{ display: 'flex', alignItems: 'center' }}>
-                  <Icons.Mail size={16} aria-label='Email' />
-                  <Text className={classes.integrationsUsername}>
-                    {portfolioData.email}
-                  </Text>
-                </div>
+                <Row
+                  gap={0.8}
+                  justify='center'
+                  style={{ marginBottom: '15px' }}
+                >
+                  <Spinner size='large' />
+                </Row>
+                <Row
+                  gap={0.8}
+                  justify='center'
+                  style={{ marginBottom: '15px' }}
+                >
+                  <Text>Loading portfolios</Text>
+                </Row>
               </div>
+            ) : (
+              <>
+                <div className={classes.content}>
+                  <Avatar
+                    alt='Your Avatar'
+                    className={classes.avatar}
+                    src='/assets/avatar.png'
+                  />
+                  <div className={classes.name}>
+                    <div className={classes.title}>
+                      <Text h2 className={classes.username}>
+                        {portfolioData.name}
+                      </Text>
+                    </div>
+                    <div>
+                      <div style={{ display: 'flex', alignItems: 'center' }}>
+                        <Icons.Mail size={16} aria-label='Email' />
+                        <Text className={classes.integrationsUsername}>
+                          {portfolioData.email}
+                        </Text>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                {portfolioData.portfolio.map((portfolio) => {
+                  return (
+                    <div className={classes.projects}>
+                      <Card shadow className={classes.card}>
+                        <div>
+                          <div className={classes.dot}>
+                            <img
+                              className={classes.logo}
+                              src={`/assets/${portfolio.chain}.svg`}
+                              alt=''
+                              srcset=''
+                            />
+                            <Snippet text={portfolio.address} />
+                            <Tag style={{ marginLeft: '8px' }}>
+                              {portfolio.chain}
+                            </Tag>
+                          </div>
+                        </div>
+                      </Card>
+                    </div>
+                  );
+                })}
+              </>
+            )}
           </div>
-        </div>
-        {
-          portfolioData.portfolio.map((portfolio) => { return (<Card shadow className={classes.card}>
-               <div >
-               <div className={classes.dot}>
-            <img
-              className={classes.logo}
-              src={`/assets/${portfolio.chain}.svg`}
-              alt=''
-              srcset=''
-            />
-            <Snippet text={portfolio.address} width="500px" />
-            <Tag style={{ marginLeft: '8px' }}>{portfolio.chain}</Tag>
-            </div>
-            </div>
-            </Card>
-            )} )
-          } 
-            </>
-        }
-
-        </div>
-          
         </Modal.Content>
         <Modal.Action passive onClick={() => setModal(false)}>
           Cancel
