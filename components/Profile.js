@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { GeistUIThemes, Avatar, Button, Text, Link } from '@geist-ui/react';
+import { GeistUIThemes, Avatar, Button, Text, Link, Row, Spinner } from '@geist-ui/react';
 import makeStyles from './makeStyles';
 import * as Icons from 'react-feather';
 import ProfileCard from './Profile/ProfileCard';
@@ -74,7 +74,7 @@ const useStyles = makeStyles((ui) => ({
   },
 }));
 
-const Profile = ({ idx }) => {
+const Profile = ({ idx, userData }) => {
   const classes = useStyles();
 
   const [addressArray, setAddress] = useState([])
@@ -89,10 +89,16 @@ const Profile = ({ idx }) => {
                 setAesKey(dec)
                 const [addressList] = await Promise.all([
                 idx.get(definitions.portfolio, idx.id)]);
-                console.log(addressList); 
-                const decryptedData = await decryptData(Buffer.from(addressList.portfolio, "hex"), dec);
-                console.log(JSON.parse(decryptedData.toString('utf8')))
-                addressList ? setAddress(JSON.parse(decryptedData.toString('utf8'))) : setAddress([])  
+                console.log(addressList);
+                if(addressList){
+                  const decryptedData = await decryptData(Buffer.from(addressList.portfolio, "hex"), dec);
+                  console.log(JSON.parse(decryptedData.toString('utf8')))
+                  addressList ? setAddress(JSON.parse(decryptedData.toString('utf8'))) : setAddress([])  
+                }
+                else{
+                  setAddress([])
+                }
+                
 
             }
         }catch(err){
@@ -122,37 +128,30 @@ const addAddress = async (newAddress) => {
             className={classes.avatar}
             src='/assets/consensolabs.png'
           />
-          <div className={classes.name}>
-            <div className={classes.title}>
-              <Text h2 className={classes.username}>
-                Consenso Labs
-              </Text>
-              <Button
-                className={classes.createProjectButton}
-                type='secondary'
-                auto
-              >
-                Edit Profile
-              </Button>
-            </div>
-            <div>
-              <div style={{ display: 'flex', alignItems: 'center' }}>
-                <Icons.Mail size={16} aria-label='Email' />
-                <Text className={classes.integrationsUsername}>
-                  Koushith97@gmail.com
+          {
+            userData ? (
+              <div className={classes.name}>
+              <div className={classes.title}>
+                <Text h2 className={classes.username}>
+                  {userData.name}
                 </Text>
               </div>
-              <Link
-                href='https://github.com/consensolabs'
-                target='_blank'
-                rel='noopener'
-                pure
-                underline
-              >
-                <div style={{ display: 'flex', alignItems: 'center' }}></div>
-              </Link>
+              <div>
+                <div style={{ display: 'flex', alignItems: 'center' }}>
+                  <Icons.Mail size={16} aria-label='Email' />
+                  <Text className={classes.integrationsUsername}>
+                    {userData.email}
+                  </Text>
+                </div>
+              </div>
             </div>
-          </div>
+            ) : (
+              <Row gap={.8} justify="center" style={{ marginBottom: '15px' }}>
+                <Spinner size="small" />
+              </Row>
+            )
+          }
+
         </div>
       </div>
 
