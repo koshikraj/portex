@@ -106,30 +106,20 @@ const useStyles = makeStyles((ui) => ({
     marginLeft: 8,
     color: `${ui.palette.foreground} !important`,
   },
-  form: {
-    display: ' flex',
-    flexDirection: 'column',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  input: {
-    margin: '6px 0',
-  },
-  inputField: {
-    width: '310px !important',
-  },
+
   projects: {
     // width: '1040px !important',
     width: 'auto',
     maxWidth: '100%',
   },
   modalContent: {
-    border: '1px solid red',
-    padding: '20px',
+    border: '1px solid #EAEAEA',
+    padding: '0 30px 0 30px',
+    borderRadius: 5,
   },
 }));
 
-function Portfolio({ state, idx, portfolio, user }) {
+function Portfolio({ state, idx, portfolio, user, setPortfolioModal }) {
   const [portfolioData, setPortfolioData] = useState({});
   const [modal, setModal] = useState(false);
   const [loading, setLoading] = useState(true);
@@ -143,11 +133,10 @@ function Portfolio({ state, idx, portfolio, user }) {
         );
         const encData = await idx.ceramic.loadDocument(portfolio.documentId);
         const decryptedData = await decryptData(
-          Buffer.from(encData._state.content.portfolio, 'hex'),
+          Buffer.from(encData.content.portfolio, 'hex'),
           aesKey
         );
         const res = JSON.parse(decryptedData.toString('utf8'));
-        console.log('Decryp:', res);
         setPortfolioData({
           name: portfolio.senderName,
           email: portfolio.senderEmail,
@@ -163,6 +152,7 @@ function Portfolio({ state, idx, portfolio, user }) {
 
   const closeHandler = (event) => {
     setModal(false);
+    setPortfolioModal(false);
   };
   const classes = useStyles();
 
@@ -171,8 +161,8 @@ function Portfolio({ state, idx, portfolio, user }) {
       <Modal width={'55%'} height={'auto'} open={modal} onClose={closeHandler}>
         <Modal.Title>User portfolio </Modal.Title>
 
-        <Modal.Content className={classes.modalContent}>
-          <div>
+        <Modal.Content>
+          <div className={classes.modalContent}>
             {loading ? (
               <div>
                 <Row
