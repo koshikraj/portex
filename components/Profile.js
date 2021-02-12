@@ -149,7 +149,7 @@ const Profile = ({ idx, userData }) => {
             <Avatar
               alt='Your Avatar'
               className={classes.avatar}
-              src='/assets/consensolabs.png'
+              src='/assets/avatar.png'
             />
             <div className={classes.name}>
               <div className={classes.title}>
@@ -186,7 +186,7 @@ const Profile = ({ idx, userData }) => {
         </div>
           ) : (
             <Row style={{ padding: '10px 0' }}>
-                <Loading>Loading</Loading>
+                :<Text> No user data found</Text>
             </Row>
           )
         }
@@ -213,7 +213,7 @@ const Profile = ({ idx, userData }) => {
             })
           ) : (
             <Row style={{ padding: '10px 0' }}>
-              <Loading>Loading</Loading>
+              <Text> No portfolios found</Text>
             </Row>
           )}
         </div>

@@ -97,7 +97,7 @@ const PortfolioCard = ({ name, created, email, address, onClickCard}) => {
 
   return (
     <>
-      <Card shadow className={classes.card} onClick={()=> {onClickCard(true)}}>
+      <Card hoverable={true} shadow className={classes.card} onClick={()=> {onClickCard(true)}}>
         <div className={classes.title}>
           <Text h3>{name}</Text>
           <Button className={classes.visitButton} size='small' auto>
@@ -106,7 +106,7 @@ const PortfolioCard = ({ name, created, email, address, onClickCard}) => {
         </div>
         <div className={classes.content}>
           <Dot type='success' className={classes.dot}>
-            <Link>{address}</Link>
+              {address}
           </Dot>
         </div>
         <Card.Footer className={classes.footer}>

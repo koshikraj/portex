@@ -125,7 +125,7 @@ const ProfileCard = ({
           <div className={classes.dot}>
             <img
               className={classes.avatar}
-              src='/assets/avatar.png'
+              src={`/assets/${name}.svg`}
               alt=''
               srcset=''
             />
