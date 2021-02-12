@@ -20,7 +20,7 @@ const useStyles = makeStyles((ui) => ({
   },
 }));
 
-function SignUp({ user, idx }) {
+function SignUp({ user, idx, setUserData }) {
   
   const [email, setEmail] = useState('');
   const [name, setName] = useState('')
@@ -56,7 +56,7 @@ function SignUp({ user, idx }) {
 
       const threadRes = await registerNewUser(idx.id, name, email, enc)
       
-      console.log(threadRes)
+      setUserData(threadRes);
       if(ceramicRes && threadRes){
         setLoading(false)
         setModal(false);

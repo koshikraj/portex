@@ -3,7 +3,7 @@ import {
   GeistUIThemes,
   Button,
   Text,
-  Link,
+  Snippet,
   Card,
   Dot,
   Tag,
@@ -105,51 +105,25 @@ const useStyles = makeStyles((ui) => ({
   },
 }));
 
-const ProfileCard = ({
-  heading,
-  created,
-  repo,
-  icon,
-  address,
-  name,
-  addAddress,
-}) => {
+const ProfileCard = ({ created, repo, icon, address, name, addAddress }) => {
   const [modal, setModal] = useState(false);
   const classes = useStyles();
 
   return (
     <>
-      <AddressModal modal={modal} setModal={setModal} addAddress={addAddress} />
+      {/* <AddressModal modal={modal} setModal={setModal} addAddress={addAddress} /> */}
 
       <Card shadow className={classes.card}>
-        <div className={classes.title}>
-          <Text h3>{heading}</Text>
+        <div className={classes.dot}>
+          <img
+            className={classes.avatar}
+            src={`/assets/${name}.svg`}
+            alt=''
+            srcset=''
+          />
+          <Snippet text={address} width='auto' />
+          <Tag style={{ marginLeft: '8px' }}>{name}</Tag>
         </div>
-        <div className={classes.content}>
-          <div className={classes.dot}>
-            <img
-              className={classes.avatar}
-              src='/assets/avatar.png'
-              alt=''
-              srcset=''
-            />
-            <Link>{address}</Link>
-            <Tag style={{ marginLeft: '8px' }}>{name}</Tag>
-          </div>
-        </div>
-
-        <Card.Footer className={classes.footer}>
-          <Button
-            className={classes.addressButton}
-            size='small'
-            auto
-            icon={<Icons.Plus />}
-            type='secondary'
-            onClick={() => setModal(true)}
-          >
-            Add New Addess
-          </Button>
-        </Card.Footer>
       </Card>
     </>
   );

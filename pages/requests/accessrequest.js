@@ -111,7 +111,7 @@ function accessrequest(props) {
   return (
     <>
       <JssProvider id={{ minify: true }}>
-        <Layout toggleDarkMode={props.toggleDarkMode}>
+      <Layout toggleDarkMode={props.toggleDarkMode} connectUser={props.connectUser} provider={props.provider} user={props.user}>
           <div className={classes.root}>
             <div className={classes.content}>
               <div className={classes.activity}>

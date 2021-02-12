@@ -140,7 +140,10 @@ const Menu = ({ toggleDarkMode, connectUser, provider, user }) => {
       <div className={classes.header}>
         <div className={classes.headerContent}>
           <div style={{ display: 'flex' }}>
-            <div className={classes.headerTitle}> Portex</div>
+            <div className={classes.headerTitle}>
+              {' '}
+              <img src='/logo.png' alt='LOGO' />
+            </div>
           </div>
           <div className={classes.sidebar}>
             <Button
@@ -181,7 +184,7 @@ const Menu = ({ toggleDarkMode, connectUser, provider, user }) => {
             <Tabs.Item label='Overview' value='/' />
             {/* replace path with :id -> /requests/:id */}
             <Tabs.Item
-              label='Pending Request'
+              label='All Requests'
               value='/requests/accessrequest'
             />
             <Tabs.Item label='My Profile' value='/profile' />
