@@ -175,7 +175,7 @@ const Content = ({idx, user, userData}) => {
   return (
     <>
       <Loader loading={loading} heading={loaderData.heading} content={loaderData.content} />
-      <Portfolio state={portfolioModal} idx={idx} portfolio={selectedPortfolio} />
+      <Portfolio state={portfolioModal} idx={idx} portfolio={selectedPortfolio} setPortfolioModal={setPortfolioModal}/>
       <div className={classes.root}>
         <div className={classes.content}>
           <Text h3>All portfolios</Text>

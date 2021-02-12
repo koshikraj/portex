@@ -111,7 +111,7 @@ const useStyles = makeStyles((ui) => ({
   },
 }));
 
-function Portfolio({ state, idx, portfolio, user }) {
+function Portfolio({ state, idx, portfolio, user, setPortfolioModal }) {
   
   const [portfolioData, setPortfolioData] = useState({});
   const [modal, setModal ] = useState(false);
@@ -124,9 +124,8 @@ function Portfolio({ state, idx, portfolio, user }) {
          console.log(idx)
           const aesKey = await idx.ceramic.did.decryptDagJWE(portfolio.encryptedKey)
           const encData = await idx.ceramic.loadDocument(portfolio.documentId)
-          const decryptedData = await decryptData(Buffer.from(encData._state.content.portfolio, "hex"), aesKey)
+          const decryptedData = await decryptData(Buffer.from(encData.content.portfolio, "hex"), aesKey)
           const res = JSON.parse(decryptedData.toString("utf8"))
-          console.log("Decryp:", res)
           setPortfolioData (  
           { name: portfolio.senderName,
             email: portfolio.senderEmail,
@@ -143,6 +142,7 @@ function Portfolio({ state, idx, portfolio, user }) {
 
   const closeHandler = (event) => {
     setModal(false);
+    setPortfolioModal(false);
   };
   const classes = useStyles();
 
