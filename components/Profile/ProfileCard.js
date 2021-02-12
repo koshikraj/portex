@@ -3,7 +3,7 @@ import {
   GeistUIThemes,
   Button,
   Text,
-  Link,
+  Snippet,
   Card,
   Dot,
   Tag,
@@ -121,9 +121,6 @@ const ProfileCard = ({
       {/* <AddressModal modal={modal} setModal={setModal} addAddress={addAddress} /> */}
 
       <Card shadow className={classes.card}>
-        <div className={classes.title}>
-          <Text h3>Coin Logo</Text>
-        </div>
         <div className={classes.content}>
           <div className={classes.dot}>
             <img
@@ -132,7 +129,7 @@ const ProfileCard = ({
               alt=''
               srcset=''
             />
-            <Link>{address}</Link>
+            <Snippet text={address} width="300px" />
             <Tag style={{ marginLeft: '8px' }}>{name}</Tag>
           </div>
         </div>

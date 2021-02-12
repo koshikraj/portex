@@ -3,7 +3,7 @@ import { GeistUIThemes, Text, Link, Button, Select, Spinner, Row, Col } from '@g
 import makeStyles from './makeStyles';
 import EventListItem from './EventListItem.js';
 import PortfolioCard from './PortfolioCard';
-import SignUp from './auth/SignUp';
+import Portfolio from './modals/Portfolio';
 import {
   getAllRequested,
   getAllUsers,
@@ -109,7 +109,8 @@ const Content = ({idx, user, userData}) => {
   const [requested, setRequested] = useState([])
   const [requests, setRequests] = useState([])
   const [sharedPortfolio, setSharedPortfolio] = useState([])
-  const [portfolioLoading, setPortfolioLoading] = useState(true)
+  const [selectedPortfolio, setSelectedPortfolio] = useState({})
+  const [portfolioModal, setPortfolioModal] = useState(false)
 
   useEffect(()=>{
     async function load(){
@@ -117,35 +118,26 @@ const Content = ({idx, user, userData}) => {
       if (idx && user===2) {
       setRequested(userData.requested)
       setRequests(userData.requests)   
-      const userPortfolios = userData.sharedData 
+      setSharedPortfolio(userData.sharedData) 
 
       const user = JSON.parse(localStorage.getItem('USER'))
       const {userArray, caller} = await getAllUsers(user.did)
       console.log("caller",caller)
       setCaller(userData)
       setUserArray(userArray)
-      
-        let portfolios = await Promise.all(userPortfolios.map(async (value) => {
-          const aesKey = await idx.ceramic.did.decryptDagJWE(value.encryptedKey)
-          const encData = await idx.ceramic.loadDocument(value.documentId)
-          const decryptedData = await decryptData(Buffer.from(encData._state.content.portfolio, "hex"), aesKey)
-          const res = JSON.parse(decryptedData.toString("utf8"))
-          console.log("Decryp:", res)
-          return {
-            name: value.senderName,
-            email: value.senderEmail,
-            did: value.senderDid,
-            portfolio: res
-          }
-        }))
-        setSharedPortfolio(portfolios)
-        setPortfolioLoading(false)
+
       }
     }
     load()
   },[idx, user])
 
-  console.log('Port:', sharedPortfolio);
+  const onClickCard = (portfolio) => {
+    console.log(portfolio)
+    setSelectedPortfolio(portfolio); 
+    setPortfolioModal(true);
+  }
+
+
 
   const handleClick = async () => {
     const res = await requestPortfolio(caller, userArray[selectedUser]);
@@ -174,34 +166,26 @@ const Content = ({idx, user, userData}) => {
   return (
     <>
       {/* testing purpose */}
+      <Portfolio state={portfolioModal} idx={idx} portfolio={selectedPortfolio} />
       <div className={classes.root}>
         <div className={classes.content}>
           <Text h3>All portfolios</Text>
           <div className={classes.row}>
             <div className={classes.projects}>
               {
-                ! portfolioLoading ?
+
                 (sharedPortfolio.length>0 ?
                     sharedPortfolio.map((value => {
                       return(
                           <PortfolioCard
-                              name={value.name}
-                              address={value.did}
-                              email={value.email}
+                              name={value.senderName}
+                              address={value.senderDid}
+                              email={value.senderEmail}
+                              onClickCard={() => {onClickCard(value)}}
                           />
                       )
                     })) :
                     <Text>No shared portfolios</Text>)
-              :
-              <div>
-                <Row gap={.8} justify="center" style={{ marginBottom: '15px' }}>
-                  <Spinner size="large" />
-                </Row>
-                <Row gap={.8} justify="center" style={{ marginBottom: '15px' }}>
-                  <Text>Loading portfolios</Text>
-                </Row>
-
-              </div>
               }
             </div>
 

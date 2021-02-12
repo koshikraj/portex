@@ -12,6 +12,7 @@ import makeStyles from './makeStyles';
 import * as Icons from 'react-feather';
 import ProfileCard from './Profile/ProfileCard';
 import AddressModal from './Profile/AddressModal';
+import Loader from './modals/Loader';
 import { definitions } from '../utils/config.json';
 import { decryptData, encryptData } from '../lib/threadDb';
 
@@ -62,7 +63,8 @@ const useStyles = makeStyles((ui) => ({
     },
   },
   projects: {
-    width: '1040px !important',
+    // width: '1040px !important',
+    width: 'auto',
     maxWidth: '100%',
   },
   integrationsTitle: {
@@ -88,6 +90,7 @@ const Profile = ({ idx, userData }) => {
   const [modal, setModal] = useState(false);
   const [addressArray, setAddress] = useState([]);
   const [aesKey, setAesKey] = useState(null);
+  const [loading, setLoading] =useState(false);
 
   useEffect(() => {
     async function fetch(){
@@ -116,6 +119,8 @@ const Profile = ({ idx, userData }) => {
   }, [idx]);
 
   const addAddress = async (newAddress) => {
+    setLoading(true);
+    setModal(false);
     const newAddresses = [...addressArray, newAddress];
 
     const encryptedData = await encryptData(
@@ -128,11 +133,13 @@ const Profile = ({ idx, userData }) => {
       portfolio: encryptedData.toString('hex'),
     });
     localStorage.setItem('docId', docId.toString());
+    setLoading(false);
   };
 
   return (
   
       <div>
+      <Loader loading={loading} heading={"Add address"} content={"Adding address"} />  
       <AddressModal modal={modal} setModal={setModal} addAddress={addAddress} />
 
       <div className={classes.root}>
@@ -197,8 +204,8 @@ const Profile = ({ idx, userData }) => {
               console.log(add);
               return (
                 <ProfileCard
-                  address={add}
-                  name='Bitcoin'
+                  address={add.address}
+                  name={add.chain}
                   addAddress={addAddress}
                   key={index}
                 />

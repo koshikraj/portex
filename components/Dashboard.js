@@ -7,7 +7,7 @@ const Dashboard = ({ toggleDarkMode,idx, user, userData }) => {
   return (
     <>
       {
-        user ? <Content idx={idx} user={user} userData={userData}/> :
+        user == 2 ? <Content idx={idx} user={user} userData={userData}/> :
         <NotConnected />
       }
     </>

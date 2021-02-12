@@ -92,12 +92,12 @@ const useStyles = makeStyles((ui) => ({
   },
 }));
 
-const PortfolioCard = ({ name, created, email, address }) => {
+const PortfolioCard = ({ name, created, email, address, onClickCard}) => {
   const classes = useStyles();
 
   return (
     <>
-      <Card shadow className={classes.card}>
+      <Card shadow className={classes.card} onClick={()=> {onClickCard(true)}}>
         <div className={classes.title}>
           <Text h3>{name}</Text>
           <Button className={classes.visitButton} size='small' auto>
