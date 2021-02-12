@@ -109,7 +109,7 @@ const PortfolioCard = ({ name, created, email, address, onClickCard }) => {
         <div className={classes.title}>
           <Text h3>{name}</Text>
           <Button className={classes.visitButton} size='small' auto>
-            Visit
+            View
           </Button>
         </div>
         <div className={classes.content}>

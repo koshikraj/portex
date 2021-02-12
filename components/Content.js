@@ -6,13 +6,10 @@ import PortfolioCard from './PortfolioCard';
 import Portfolio from './modals/Portfolio';
 import Loader from './modals/Loader';
 import {
-  getAllRequested,
+  getLoginUser,
   getAllUsers,
   requestPortfolio,
-  getAllRequests,
   sharePortfolio,
-  getSharedPortfolios,
-  decryptData,
 } from '../lib/threadDb';
 import * as Icons from 'react-feather';
 
@@ -155,6 +152,17 @@ const Content = ({idx, user, userData}) => {
     setLoading(false);
   };
 
+  const fetchUserDetails = async () => {
+    setLoaderData({heading: "Fetch portfolio", content: "Fetching portfolio"})
+    setLoading(true);
+    const userData = await getLoginUser(idx.id)
+    setRequested(userData.requested)
+    setRequests(userData.requests)   
+    setSharedPortfolio(userData.sharedData) 
+    setLoading(false);
+
+  }
+
   const handleAccept = async (receiver) => {
     
     setLoading(true)
@@ -178,7 +186,18 @@ const Content = ({idx, user, userData}) => {
       <Portfolio state={portfolioModal} idx={idx} portfolio={selectedPortfolio} setPortfolioModal={setPortfolioModal}/>
       <div className={classes.root}>
         <div className={classes.content}>
+          <Row>
           <Text h3>All portfolios</Text>
+          <Button
+              // aria-label='Toggle Dark mode'
+              // className={classes.themeIcon}
+              auto
+              type='abort'
+              onClick={fetchUserDetails}
+            >
+             <Icons.RefreshCcw size={16} />
+            </Button>
+            </Row>
           <div className={classes.row}>
             <div className={classes.projects}>
               {

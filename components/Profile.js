@@ -210,7 +210,7 @@ const Profile = ({ idx, userData }) => {
           style={{ marginBottom: '0px', height: '0px', background: 'red' }}
         >
           <Text h4 className={classes.username}>
-            My Portfolio
+            My Portfolio Accounts
           </Text>
         </div>
         <div className={classes.content}>

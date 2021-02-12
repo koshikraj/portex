@@ -51,7 +51,7 @@ pageProps['connectUser'] = connectUser
   return (
     <GeistProvider theme={{ type: themeType }}>
       <CssBaseline />
-      <Component {...pageProps} provider={provider} toggleDarkMode={toggleDarkMode} connectUser={connectUser} user={user} idx={idx} userData={userData}/>
+      <Component {...pageProps} provider={provider} toggleDarkMode={toggleDarkMode} connectUser={connectUser} user={user} idx={idx} userData={userData} setUserData={setUserData}/>
     </GeistProvider>
   )
 }
