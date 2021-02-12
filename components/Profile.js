@@ -1,10 +1,19 @@
 import React, { useState, useEffect } from 'react';
-import { GeistUIThemes, Avatar, Button, Text, Link, Row, Spinner } from '@geist-ui/react';
+import {
+  GeistUIThemes,
+  Avatar,
+  Button,
+  Text,
+  Link,
+  Row,
+  Loading,
+} from '@geist-ui/react';
 import makeStyles from './makeStyles';
 import * as Icons from 'react-feather';
 import ProfileCard from './Profile/ProfileCard';
-import {definitions} from '../utils/config.json'
-import {decryptData, encryptData} from "../lib/threadDb"
+import AddressModal from './Profile/AddressModal';
+import { definitions } from '../utils/config.json';
+import { decryptData, encryptData } from '../lib/threadDb';
 
 const useStyles = makeStyles((ui) => ({
   root: {
@@ -76,9 +85,9 @@ const useStyles = makeStyles((ui) => ({
 
 const Profile = ({ idx, userData }) => {
   const classes = useStyles();
-
-  const [addressArray, setAddress] = useState([])
-  const [aesKey, setAesKey] = useState(null)
+  const [modal, setModal] = useState(false);
+  const [addressArray, setAddress] = useState([]);
+  const [aesKey, setAesKey] = useState(null);
 
   useEffect(() => {
     async function fetch(){
@@ -98,43 +107,57 @@ const Profile = ({ idx, userData }) => {
                 else{
                   setAddress([])
                 }
-                
-
             }
         }catch(err){
             console.log(err)
         }
-    }
-    fetch()
-}, [])
+      }
+    fetch();
+  }, [idx]);
 
-const addAddress = async (newAddress) => {
-  const newAddresses = [...addressArray, newAddress];
-  const encryptedData = await encryptData(Buffer.from(JSON.stringify(newAddresses)), aesKey)
-  console.log(encryptedData)
-  setAddress(newAddresses)
-  const docId = await idx.set(definitions.portfolio, {
-    portfolio: encryptedData.toString("hex")
-  })
-  localStorage.setItem("docId",docId.toString())
-}
+  const addAddress = async (newAddress) => {
+    const newAddresses = [...addressArray, newAddress];
+
+    const encryptedData = await encryptData(
+      Buffer.from(JSON.stringify(newAddresses)),
+      aesKey
+    );
+    console.log(encryptedData);
+    setAddress(newAddresses);
+    const docId = await idx.set(definitions.portfolio, {
+      portfolio: encryptedData.toString('hex'),
+    });
+    localStorage.setItem('docId', docId.toString());
+  };
 
   return (
-    <>
+  
+      <div>
+      <AddressModal modal={modal} setModal={setModal} addAddress={addAddress} />
+
       <div className={classes.root}>
-        <div className={classes.content}>
-          <Avatar
-            alt='Your Avatar'
-            className={classes.avatar}
-            src='/assets/consensolabs.png'
-          />
-          {
-            userData ? (
-              <div className={classes.name}>
+        {
+          userData ? (
+            <div className={classes.content}>
+            <Avatar
+              alt='Your Avatar'
+              className={classes.avatar}
+              src='/assets/consensolabs.png'
+            />
+            <div className={classes.name}>
               <div className={classes.title}>
                 <Text h2 className={classes.username}>
                   {userData.name}
                 </Text>
+                <Button
+                  className={classes.createProjectButton}
+                  type='secondary'
+                  auto
+                  icon={<Icons.Plus />}
+                  onClick={() => setModal(true)}
+                >
+                  Add New Address
+                </Button>
               </div>
               <div>
                 <div style={{ display: 'flex', alignItems: 'center' }}>
@@ -143,46 +166,54 @@ const addAddress = async (newAddress) => {
                     {userData.email}
                   </Text>
                 </div>
+                <Link
+                  href='https://github.com/consensolabs'
+                  target='_blank'
+                  rel='noopener'
+                  underline
+                >
+                  <div style={{ display: 'flex', alignItems: 'center' }}></div>
+                </Link>
               </div>
-            </div>
-            ) : (
-              <Row gap={.8} justify="center" style={{ marginBottom: '15px' }}>
-                <Spinner size="small" />
-              </Row>
-            )
-          }
-
+          </div>
         </div>
+          ) : (
+            <Row style={{ padding: '10px 0' }}>
+                <Loading>Loading</Loading>
+            </Row>
+          )
+        }
+     
+      <div className={classes.content}>
+        <Text h4 className={classes.username}>
+          My Portfolio
+        </Text>
       </div>
-
       <div className={classes.content}>
         <div className={classes.projects}>
           {
-            addressArray.length>0 ? (
-              addressArray.map((add, index) => {
-                console.log(add)
-                return(
-                  <ProfileCard
-                    heading='Your Portfolio'
-                    address={add}
-                    name='Bitcoin'
-                    addAddress={addAddress}
-                    key={index}
-              />
-                )
-              })
-            ) : (<p>Loading....</p>)
-          }
-          <ProfileCard
-              heading='Your Portfolio'
-              address="add"
-              name='Bitcoin'
-              addAddress={addAddress}
-          />
-          
+          addressArray.length > 0 ? (
+            addressArray.map((add, index) => {
+              console.log(add);
+              return (
+                <ProfileCard
+                  address={add}
+                  name='Bitcoin'
+                  addAddress={addAddress}
+                  key={index}
+                />
+              );
+            })
+          ) : (
+            <Row style={{ padding: '10px 0' }}>
+              <Loading>Loading</Loading>
+            </Row>
+          )}
         </div>
       </div>
-    </>
+      </div>
+      </div>
+
   );
 };
 

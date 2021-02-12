@@ -106,7 +106,6 @@ const useStyles = makeStyles((ui) => ({
 }));
 
 const ProfileCard = ({
-  heading,
   created,
   repo,
   icon,
@@ -119,11 +118,11 @@ const ProfileCard = ({
 
   return (
     <>
-      <AddressModal modal={modal} setModal={setModal} addAddress={addAddress} />
+      {/* <AddressModal modal={modal} setModal={setModal} addAddress={addAddress} /> */}
 
       <Card shadow className={classes.card}>
         <div className={classes.title}>
-          <Text h3>{heading}</Text>
+          <Text h3>Coin Logo</Text>
         </div>
         <div className={classes.content}>
           <div className={classes.dot}>
@@ -137,19 +136,6 @@ const ProfileCard = ({
             <Tag style={{ marginLeft: '8px' }}>{name}</Tag>
           </div>
         </div>
-
-        <Card.Footer className={classes.footer}>
-          <Button
-            className={classes.addressButton}
-            size='small'
-            auto
-            icon={<Icons.Plus />}
-            type='secondary'
-            onClick={() => setModal(true)}
-          >
-            Add New Addess
-          </Button>
-        </Card.Footer>
       </Card>
     </>
   );
