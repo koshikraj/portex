@@ -4,14 +4,12 @@ import makeStyles from './makeStyles';
 import EventListItem from './EventListItem.js';
 import PortfolioCard from './PortfolioCard';
 import Portfolio from './modals/Portfolio';
+import Loader from './modals/Loader';
 import {
-  getAllRequested,
+  getLoginUser,
   getAllUsers,
   requestPortfolio,
-  getAllRequests,
   sharePortfolio,
-  getSharedPortfolios,
-  decryptData,
 } from '../lib/threadDb';
 import * as Icons from 'react-feather';
 
@@ -111,6 +109,8 @@ const Content = ({idx, user, userData}) => {
   const [sharedPortfolio, setSharedPortfolio] = useState([])
   const [selectedPortfolio, setSelectedPortfolio] = useState({})
   const [portfolioModal, setPortfolioModal] = useState(false)
+  const [loading, setLoading] = useState(false)
+  const [loaderData, setLoaderData] = useState({})
 
   useEffect(()=>{
     async function load(){
@@ -140,6 +140,8 @@ const Content = ({idx, user, userData}) => {
 
 
   const handleClick = async () => {
+    setLoaderData({heading: "Request Portfolio", content: "Requesting portfolio"})
+    setLoading(true);
     const res = await requestPortfolio(caller, userArray[selectedUser]);
     if (res) {
       requested.push({
@@ -147,10 +149,24 @@ const Content = ({idx, user, userData}) => {
         name: userArray[selectedUser].name,
       });
     }
+    setLoading(false);
   };
 
+  const fetchUserDetails = async () => {
+    setLoaderData({heading: "Fetch portfolio", content: "Fetching portfolio"})
+    setLoading(true);
+    const userData = await getLoginUser(idx.id)
+    setRequested(userData.requested)
+    setRequests(userData.requests)   
+    setSharedPortfolio(userData.sharedData) 
+    setLoading(false);
+
+  }
+
   const handleAccept = async (receiver) => {
-    // get the key from local-> dec-> enc-> push to threadDb
+    
+    setLoading(true)
+    setLoaderData({heading: "Accept Portfolio Request", content: "Accepting portfolio request"})
     const docId = localStorage.getItem('docId');
     const user = JSON.parse(localStorage.getItem('USER'));
     const dec = await idx.ceramic.did.decryptDagJWE(user.aesKey);
@@ -158,6 +174,7 @@ const Content = ({idx, user, userData}) => {
       receiver.senderDid,
     ]);
     await sharePortfolio(caller, receiver, docId, encKey);
+    setLoading(false)
   };
 
   const handleReject = async () => {};
@@ -165,11 +182,22 @@ const Content = ({idx, user, userData}) => {
   const classes = useStyles();
   return (
     <>
-      {/* testing purpose */}
-      <Portfolio state={portfolioModal} idx={idx} portfolio={selectedPortfolio} />
+      <Loader loading={loading} heading={loaderData.heading} content={loaderData.content} />
+      <Portfolio state={portfolioModal} idx={idx} portfolio={selectedPortfolio} setPortfolioModal={setPortfolioModal}/>
       <div className={classes.root}>
         <div className={classes.content}>
+          <Row>
           <Text h3>All portfolios</Text>
+          <Button
+              // aria-label='Toggle Dark mode'
+              // className={classes.themeIcon}
+              auto
+              type='abort'
+              onClick={fetchUserDetails}
+            >
+             <Icons.RefreshCcw size={16} />
+            </Button>
+            </Row>
           <div className={classes.row}>
             <div className={classes.projects}>
               {
@@ -193,7 +221,7 @@ const Content = ({idx, user, userData}) => {
 
             <div className={classes.activity}>
               <Text h2 className={classes.inviteHeading}>
-                Search User
+                Request User Portfolio
               </Text>
               <div className={classes.invite}>
                 <Select
@@ -225,7 +253,7 @@ const Content = ({idx, user, userData}) => {
               </div>
 
               <Text h2 className={classes.activityTitle}>
-                Recent Activity
+                Recent Activities
               </Text>
 
               {requested.length > 0 ? (
@@ -241,7 +269,7 @@ const Content = ({idx, user, userData}) => {
                   );
                 })
               ) : (
-                <h5>No activity</h5>
+                <Text className={classes.message}>No activity</Text>
               )}
               <Text className={classes.viewAll}>
                 <Link color>View more</Link>
@@ -277,7 +305,7 @@ const Content = ({idx, user, userData}) => {
                   );
                 })
               ) : (
-                <h5>No requests</h5>
+                <Text className={classes.message}>No activity</Text>
               )}
             </div>
           </div>

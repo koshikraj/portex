@@ -13,7 +13,7 @@ const useStyles = makeStyles((ui) => ({
   },
   logo: {
     // border: `1px solid ${ui.palette.accents_2}`,
-    borderRadius: '50% !important',
+    // borderRadius: '50% !important',
     margin: '0 6px 0 0 !important',
   },
   [`@media screen and (min-width: ${ui.layout.pageWidthWithMargin})`]: {
@@ -27,17 +27,11 @@ const Footer = () => {
   const classes = useStyles();
   return (
     <div className={classes.root}>
-      <Image
-        className={classes.logo}
-        src='/assets/geist.png'
-        width={32}
-        height={32}
-        title='Geist Logo'
-      />
+      <Image className={classes.logo} src='/logo.png' title='Portex' />
       <Text>
         &copy;2020_
         <Link
-          href='https://github.com/geist-org'
+          href='https://github.com/'
           target='_blank'
           rel='noopener'
           pure

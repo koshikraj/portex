@@ -20,8 +20,8 @@ const useStyles = makeStyles((ui) => ({
   },
 }));
 
-function SignUp({ user, idx, identity }) {
-  
+function SignUp({ user, idx, setUserData, identity}) {
+
   const [email, setEmail] = useState('');
   const [name, setName] = useState('')
   const [modal, setModal] = useState(false)
@@ -40,7 +40,7 @@ function SignUp({ user, idx, identity }) {
   const handleSubmit = async () => {
     //ceramic and threaddb
     const aesKey = await generateCipherKey()
-    if(idx) {
+    if (idx) {
       setLoading(true)
 
       const client = await loginUserWithChallenge(identity);
@@ -59,16 +59,16 @@ function SignUp({ user, idx, identity }) {
 
         const threadRes = await registerNewUser(idx.id, name, email, enc)
 
-        console.log(threadRes)
+        setUserData(threadRes);
         if (ceramicRes && threadRes) {
           setLoading(false)
           setModal(false);
         }
+      } else {
+        console.log("Not authenticated with server!!!")
+        setLoading(false)
+        setModal(false);
       }
-    }else {
-      console.log("Not authenticated with server!!!")
-      setLoading(false)
-      setModal(false);
     }
   }
 

@@ -105,14 +105,7 @@ const useStyles = makeStyles((ui) => ({
   },
 }));
 
-const ProfileCard = ({
-  created,
-  repo,
-  icon,
-  address,
-  name,
-  addAddress,
-}) => {
+const ProfileCard = ({ created, repo, icon, address, name, addAddress }) => {
   const [modal, setModal] = useState(false);
   const classes = useStyles();
 
@@ -121,17 +114,15 @@ const ProfileCard = ({
       {/* <AddressModal modal={modal} setModal={setModal} addAddress={addAddress} /> */}
 
       <Card shadow className={classes.card}>
-        <div className={classes.content}>
-          <div className={classes.dot}>
-            <img
-              className={classes.avatar}
-              src='/assets/avatar.png'
-              alt=''
-              srcset=''
-            />
-            <Snippet text={address} width="300px" />
-            <Tag style={{ marginLeft: '8px' }}>{name}</Tag>
-          </div>
+        <div className={classes.dot}>
+          <img
+            className={classes.avatar}
+            src={`/assets/${name}.svg`}
+            alt=''
+            srcset=''
+          />
+          <Snippet text={address} width='auto' />
+          <Tag style={{ marginLeft: '8px' }}>{name}</Tag>
         </div>
       </Card>
     </>

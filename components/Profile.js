@@ -83,6 +83,14 @@ const useStyles = makeStyles((ui) => ({
     height: '50px !important',
     marginRight: '25px !important',
   },
+  heading: {
+    display: 'flex',
+    flexDirection: 'row',
+    width: ui.layout.pageWidthWithMargin,
+    paddingLeft: 23.333,
+    boxSizing: 'border-box',
+    margin: '0 auto',
+  },
 }));
 
 const Profile = ({ idx, userData }) => {
@@ -90,31 +98,36 @@ const Profile = ({ idx, userData }) => {
   const [modal, setModal] = useState(false);
   const [addressArray, setAddress] = useState([]);
   const [aesKey, setAesKey] = useState(null);
-  const [loading, setLoading] =useState(false);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    async function fetch(){
-        try{
-            if(idx){
-                const res = JSON.parse(localStorage.getItem("USER"))
-                const dec = await idx.ceramic.did.decryptDagJWE(res.aesKey)
-                setAesKey(dec)
-                const [addressList] = await Promise.all([
-                idx.get(definitions.portfolio, idx.id)]);
-                console.log(addressList);
-                if(addressList){
-                  const decryptedData = await decryptData(Buffer.from(addressList.portfolio, "hex"), dec);
-                  console.log(JSON.parse(decryptedData.toString('utf8')))
-                  addressList ? setAddress(JSON.parse(decryptedData.toString('utf8'))) : setAddress([])  
-                }
-                else{
-                  setAddress([])
-                }
-            }
-        }catch(err){
-            console.log(err)
+    async function fetch() {
+      try {
+        if (idx) {
+          const res = JSON.parse(localStorage.getItem('USER'));
+          const dec = await idx.ceramic.did.decryptDagJWE(res.aesKey);
+          setAesKey(dec);
+          const [addressList] = await Promise.all([
+            idx.get(definitions.portfolio, idx.id),
+          ]);
+          console.log(addressList);
+          if (addressList) {
+            const decryptedData = await decryptData(
+              Buffer.from(addressList.portfolio, 'hex'),
+              dec
+            );
+            console.log(JSON.parse(decryptedData.toString('utf8')));
+            addressList
+              ? setAddress(JSON.parse(decryptedData.toString('utf8')))
+              : setAddress([]);
+          } else {
+            setAddress([]);
+          }
         }
+      } catch (err) {
+        console.log(err);
       }
+    }
     fetch();
   }, [idx]);
 
@@ -137,19 +150,21 @@ const Profile = ({ idx, userData }) => {
   };
 
   return (
-  
-      <div>
-      <Loader loading={loading} heading={"Add address"} content={"Adding address"} />  
+    <div>
+      <Loader
+        loading={loading}
+        heading={'Add address'}
+        content={'Adding address'}
+      />
       <AddressModal modal={modal} setModal={setModal} addAddress={addAddress} />
 
       <div className={classes.root}>
-        {
-          userData ? (
-            <div className={classes.content}>
+        {userData ? (
+          <div className={classes.content}>
             <Avatar
               alt='Your Avatar'
               className={classes.avatar}
-              src='/assets/consensolabs.png'
+              src='/assets/avatar.png'
             />
             <div className={classes.name}>
               <div className={classes.title}>
@@ -182,45 +197,45 @@ const Profile = ({ idx, userData }) => {
                   <div style={{ display: 'flex', alignItems: 'center' }}></div>
                 </Link>
               </div>
+            </div>
+          </div>
+        ) : (
+          <Row style={{ padding: '10px 0' }}>
+            :<Text> No user data found</Text>
+          </Row>
+        )}
+
+        <div
+          className={classes.heading}
+          style={{ marginBottom: '0px', height: '0px', background: 'red' }}
+        >
+          <Text h4 className={classes.username}>
+            My Portfolio Accounts
+          </Text>
+        </div>
+        <div className={classes.content}>
+          <div className={classes.projects}>
+            {addressArray.length > 0 ? (
+              addressArray.map((add, index) => {
+                console.log(add);
+                return (
+                  <ProfileCard
+                    address={add.address}
+                    name={add.chain}
+                    addAddress={addAddress}
+                    key={index}
+                  />
+                );
+              })
+            ) : (
+              <Row style={{ padding: '10px 0' }}>
+                <Text> No portfolios found</Text>
+              </Row>
+            )}
           </div>
         </div>
-          ) : (
-            <Row style={{ padding: '10px 0' }}>
-                <Loading>Loading</Loading>
-            </Row>
-          )
-        }
-     
-      <div className={classes.content}>
-        <Text h4 className={classes.username}>
-          My Portfolio
-        </Text>
       </div>
-      <div className={classes.content}>
-        <div className={classes.projects}>
-          {
-          addressArray.length > 0 ? (
-            addressArray.map((add, index) => {
-              console.log(add);
-              return (
-                <ProfileCard
-                  address={add.address}
-                  name={add.chain}
-                  addAddress={addAddress}
-                  key={index}
-                />
-              );
-            })
-          ) : (
-            <Row style={{ padding: '10px 0' }}>
-              <Loading>Loading</Loading>
-            </Row>
-          )}
-        </div>
-      </div>
-      </div>
-      </div>
-
+    </div>
   );
 };
 
