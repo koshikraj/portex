@@ -8,6 +8,7 @@
   },
   "dependencies": {
     "@sendgrid/mail": "^7.4.1",
+    "@textile/hub": "^6.0.2",
     "cors": "^2.8.5",
     "dotenv": "^8.2.0",
     "emittery": "^0.8.1",
