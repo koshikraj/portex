@@ -1,15 +1,14 @@
-import {useState} from 'react'
+import React, {useState} from 'react'
 import Layout from '../components/Layout';
 import Dashboard from '../components/Dashboard'
 import SignUp from "../components/auth/SignUp"
 import { JssProvider } from 'react-jss';
 const Home = (props) => {
-    
 
     return (
         <JssProvider id={{ minify: true }}>
         <Layout toggleDarkMode={props.toggleDarkMode} connectUser={props.connectUser} provider={props.provider} user={props.user}>
-            <SignUp user={props.user} idx={props.idx} setUserData={props.setUserData} />
+            <SignUp user={props.user} idx={props.idx} identity={props.identity} setUserData={props.setUserData} />
             <Dashboard idx={props.idx} user={props.user} userData={props.userData} />
         </Layout>
         </JssProvider>

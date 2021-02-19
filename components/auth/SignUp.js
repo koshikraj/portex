@@ -3,7 +3,7 @@ import { Button, Modal, Input } from '@geist-ui/react';
 import * as Icons from 'react-feather';
 import makeStyles from '../makeStyles';
 import {definitions} from "../../utils/config.json"
-import { generateCipherKey, registerNewUser } from '../../lib/threadDb';
+import {generateCipherKey, loginUserWithChallenge, registerNewUser} from '../../lib/threadDb';
 
 const useStyles = makeStyles((ui) => ({
   form: {
@@ -20,8 +20,8 @@ const useStyles = makeStyles((ui) => ({
   },
 }));
 
-function SignUp({ user, idx, setUserData }) {
-  
+function SignUp({ user, idx, setUserData, identity}) {
+
   const [email, setEmail] = useState('');
   const [name, setName] = useState('')
   const [modal, setModal] = useState(false)
@@ -40,24 +40,32 @@ function SignUp({ user, idx, setUserData }) {
   const handleSubmit = async () => {
     //ceramic and threaddb
     const aesKey = await generateCipherKey()
-    if(idx){
+    if (idx) {
       setLoading(true)
-      const enc = await idx.ceramic.did.createDagJWE(aesKey, [idx.id])
 
-      const ceramicRes = await idx.set(definitions.profile, {
-        name: name,
-        email: email
-      })
+      const client = await loginUserWithChallenge(identity);
+      if (client != null) {
 
-      const encCeramic = await idx.set(definitions.encryptionKey, {
-        key: enc
-      })
+        const enc = await idx.ceramic.did.createDagJWE(aesKey, [idx.id])
 
+        const ceramicRes = await idx.set(definitions.profile, {
+          name: name,
+          email: email
+        })
 
-      const threadRes = await registerNewUser(idx.id, name, email, enc)
-      
-      setUserData(threadRes);
-      if(ceramicRes && threadRes){
+        const encCeramic = await idx.set(definitions.encryptionKey, {
+          key: enc
+        })
+
+        const threadRes = await registerNewUser(idx.id, name, email, enc)
+
+        setUserData(threadRes);
+        if (ceramicRes && threadRes) {
+          setLoading(false)
+          setModal(false);
+        }
+      } else {
+        console.log("Not authenticated with server!!!")
         setLoading(false)
         setModal(false);
       }
