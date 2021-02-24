@@ -75,8 +75,6 @@ const handleMagicLinkWeb3 = async (provider) => {
   }catch(err){
     console.log(err)
   }
-
-  
 }
 
 
