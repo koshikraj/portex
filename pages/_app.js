@@ -73,7 +73,7 @@ const handleMagicLinkWeb3 = async (provider) => {
     console.log("thread", threadData)
     setUser((threadData && data) ? 2 : 1)
   }catch(err){
-    console.log("Ley Gandu u screwed it up in app.js line 75")
+    console.log(err)
   }
 
   
