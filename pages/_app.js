@@ -67,6 +67,7 @@ pageProps['connectUser'] = connectUser
           userData={userData}
           identity={identity}
           setUserData={setUserData}
+          setUser={setUser}
       />
     </GeistProvider>
   )
