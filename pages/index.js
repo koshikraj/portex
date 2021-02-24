@@ -7,7 +7,7 @@ const Home = (props) => {
 
     return (
         <JssProvider id={{ minify: true }}>
-        <Layout toggleDarkMode={props.toggleDarkMode} connectUser={props.connectUser} provider={props.provider} user={props.user}>
+        <Layout toggleDarkMode={props.toggleDarkMode} connectUser={props.connectUser} provider={props.provider} user={props.user} handleMagicLinkWeb3={props.handleMagicLinkWeb3}>
             <SignUp user={props.user} idx={props.idx} identity={props.identity} setUserData={props.setUserData} />
             <Dashboard idx={props.idx} user={props.user} userData={props.userData} />
         </Layout>

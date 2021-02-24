@@ -1,7 +1,7 @@
 import React, {useState} from 'react'
 import {CssBaseline, GeistProvider} from '@geist-ui/react'
 import {generateSignature} from "../lib/signerConnect"
-import {generateIDX} from '../lib/identity'
+import {generateIDX, generateIDXForMagic} from '../lib/identity'
 import {definitions} from '../utils/config.json'
 import {getLoginUser, loginUserWithChallenge} from '../lib/threadDb';
 import {PrivateKey} from "@textile/hub";
@@ -51,6 +51,34 @@ const connectUser = async () => {
   
 }
 
+const handleMagicLinkWeb3 = async (provider) => {
+  try{
+    const {idx, ceramic, seed} = await generateIDXForMagic(provider);
+    setIdx(idx)
+    const identity = PrivateKey.fromRawEd25519Seed(Uint8Array.from(seed))
+    setIdentity(identity)
+    let threadData = null
+    const client = await loginUserWithChallenge(identity);
+    if (client !== null) {
+      //call middleWare
+      setCeramic(ceramic)
+      threadData = await getLoginUser(idx.id)
+      if (!localStorage.getItem("USER")) {
+        localStorage.setItem("USER", JSON.stringify(threadData))
+      }
+    }
+    const data = await idx.get(definitions.profile, idx.id)
+    setUserData(threadData)
+    console.log("Ceramic data", data)
+    console.log("thread", threadData)
+    setUser((threadData && data) ? 2 : 1)
+  }catch(err){
+    console.log("Ley Gandu u screwed it up in app.js line 75")
+  }
+
+  
+}
+
 
 pageProps['connectUser'] = connectUser
 
@@ -62,6 +90,7 @@ pageProps['connectUser'] = connectUser
           provider={provider}
           toggleDarkMode={toggleDarkMode}
           connectUser={connectUser}
+          handleMagicLinkWeb3={handleMagicLinkWeb3}
           user={user}
           idx={idx}
           userData={userData}
