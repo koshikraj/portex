@@ -20,7 +20,7 @@ const useStyles = makeStyles((ui) => ({
   },
 }));
 
-function SignUp({ user, idx, setUserData, identity}) {
+function SignUp({ user, idx, setUserData, identity, setUser}) {
 
   const [email, setEmail] = useState('');
   const [name, setName] = useState('')
@@ -61,8 +61,9 @@ function SignUp({ user, idx, setUserData, identity}) {
 
         setUserData(threadRes);
         if (ceramicRes && threadRes) {
-          setLoading(false)
+          setLoading(false);
           setModal(false);
+          setUser(2);
         }
       } else {
         console.log("Not authenticated with server!!!")

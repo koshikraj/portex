@@ -29,7 +29,7 @@ const Footer = () => {
     <div className={classes.root}>
       <Image className={classes.logo} src='/logo.png' title='Portex' />
       <Text>
-        &copy;2020_
+        &copy;{new Date().getFullYear()}
         <Link
           href='https://github.com/'
           target='_blank'
@@ -37,7 +37,6 @@ const Footer = () => {
           pure
           underline
         >
-          Portex
         </Link>
         .
       </Text>
