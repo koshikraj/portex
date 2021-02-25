@@ -78,7 +78,7 @@ function Connect({ modal, setModal, connectUser, userConnected }) {
 
           <Modal.Content>
           <Row gap={.8} justify="center" style={{ marginBottom: '15px' }}>
-          <Button type="secondary" icon={<Image width="25" height="25" src="/assets/metamask.png" />} ghost onClick={() => {connectUser(), setModal(false), setLoading(true)}}>MetaMask</Button>
+          <Button type="secondary" icon={<Image width="25" height="25" src="/assets/metamask.png" />} ghost onClick={() => {connectUser(null), setModal(false), setLoading(true)}}>MetaMask</Button>
           </Row>
           <Row gap={.8} justify="center" style={{ marginBottom: '15px' }}>
           <Button type="secondary" icon={<Image width="25" height="25" src="/assets/github.png" />} ghost onClick={() => {
