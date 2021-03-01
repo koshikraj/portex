@@ -7,7 +7,6 @@ import { useUser } from '../../lib/hooks';
 import {ethers} from "ethers"
 
 function Connect({ modal, setModal, connectUser, userConnected }) {
-  console.log(userConnected)
   const [isRedirecting, setIsRedirecting] = useState(false);
 
   const [loading, setLoading] = useState(false);
@@ -37,7 +36,7 @@ function Connect({ modal, setModal, connectUser, userConnected }) {
       setDisabled(true); // disable login button to prevent multiple emails from being triggered
       let didToken = await magic.auth.loginWithMagicLink({
         email,
-        redirectURI: `${process.env.NEXT_PUBLIC_SERVER_URL}/callback`,
+        redirectURI: `${process.env.NEXT_PUBLIC_CLIENT_URL}/callback`,
       });
       authenticateWithServer(didToken);
     } catch (error) {
@@ -49,13 +48,13 @@ function Connect({ modal, setModal, connectUser, userConnected }) {
   async function handleLoginWithSocial(provider) {
     await magic.oauth.loginWithRedirect({
       provider,
-      redirectURI: `${process.env.NEXT_PUBLIC_SERVER_URL}/callback`,
+      redirectURI: `${process.env.NEXT_PUBLIC_CLIENT_URL}/callback`,
     });
   }
 
   // try to login with webauthn, if that fails, revert to registering with webauthn
   async function authenticateWithServer(didToken) {
-    const res = await fetch('/api/login', {
+    const res = await fetch(`${process.env.NEXT_PUBLIC_MIDDLEWARE_URL}/api/login`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

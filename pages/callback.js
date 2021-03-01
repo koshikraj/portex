@@ -59,7 +59,7 @@ const Callback = (props) => {
   };
 
   const authenticateWithServer = async (didToken) => {
-    let res = await fetch('/api/login', {
+    let res = await fetch(`${process.env.NEXT_PUBLIC_MIDDLEWARE_URL}/api/login`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
