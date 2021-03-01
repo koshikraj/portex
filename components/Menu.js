@@ -168,7 +168,7 @@ const Menu = ({ toggleDarkMode, connectUser, provider, user }) => {
               type='abort'
               onClick={setModal}
             >
-            {provider ?  "Disconnect" : "Connect" }
+            {user===2 ?  "Disconnect" : "Connect" }
             </Button>
           </div>
         </div>

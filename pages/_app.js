@@ -1,7 +1,7 @@
 import React, {useState} from 'react'
 import {CssBaseline, GeistProvider} from '@geist-ui/react'
 import {generateSignature} from "../lib/signerConnect"
-import {generateIDX} from '../lib/identity'
+import {generateIDX, generateIDXForMagic} from '../lib/identity'
 import {definitions} from '../utils/config.json'
 import {getLoginUser, loginUserWithChallenge} from '../lib/threadDb';
 import {PrivateKey} from "@textile/hub";
@@ -26,10 +26,10 @@ function MyApp({ Component, pageProps }) {
   //   colorSchemeQuery.onchange = (e) => setThemeType(e.matches ? 'dark' : 'light');
   // }
 
-const connectUser = async () => {
+const connectUser = async (provider) => {
   console.log('connect')
-  const {seed, metamask} = await generateSignature();
-  setProvider(metamask)
+  const {seed, web3Provider} = await generateSignature(provider);
+  setProvider(web3Provider)
   const {idx, ceramic} = await generateIDX(seed);
   setIdx(idx)
 
@@ -51,6 +51,14 @@ const connectUser = async () => {
   
 }
 
+const handleMagicLinkWeb3 = async (provider) => {
+  try{
+    connectUser(provider)
+  }catch(err){
+    console.log(err)
+  }
+}
+
 
 pageProps['connectUser'] = connectUser
 
@@ -62,6 +70,7 @@ pageProps['connectUser'] = connectUser
           provider={provider}
           toggleDarkMode={toggleDarkMode}
           connectUser={connectUser}
+          handleMagicLinkWeb3={handleMagicLinkWeb3}
           user={user}
           idx={idx}
           userData={userData}
