@@ -164,7 +164,7 @@ const Content = ({idx, user, userData}) => {
   }
 
   const handleAccept = async (receiver) => {
-    
+    console.log("Receiver:",receiver)
     setLoading(true)
     setLoaderData({heading: "Accept Portfolio Request", content: "Accepting portfolio request"})
     const docId = localStorage.getItem('docId');
@@ -173,7 +173,7 @@ const Content = ({idx, user, userData}) => {
     const encKey = await idx.ceramic.did.createDagJWE(dec, [
       receiver.senderDid,
     ]);
-    await sharePortfolio(caller, receiver, docId, encKey);
+    await sharePortfolio(caller, receiver, docId, encKey, receiver.requestId);
     setLoading(false)
   };
 
