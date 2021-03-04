@@ -10,6 +10,7 @@ import {
   getAllUsers,
   requestPortfolio,
   sharePortfolio,
+  rejectPortfolioRequest
 } from '../lib/threadDb';
 import * as Icons from 'react-feather';
 
@@ -177,7 +178,12 @@ const Content = ({idx, user, userData}) => {
     setLoading(false)
   };
 
-  const handleReject = async () => {};
+  const handleReject = async (receiver) => {
+    setLoading(true)
+    setLoaderData({heading: "Reject Portfolio Request", content: "Rejecting portfolio request"})
+    await rejectPortfolioRequest(caller, receiver.requestId)
+    setLoading(false)
+  };
 
   const classes = useStyles();
   return (
@@ -298,7 +304,11 @@ const Content = ({idx, user, userData}) => {
                       >
                         Accept
                       </Button>
-                      <Button size='small' auto>
+                      <Button
+                          size='small'
+                          auto
+                          onClick={() => handleReject(value)}
+                      >
                         Reject
                       </Button>
                     </EventListItem>
