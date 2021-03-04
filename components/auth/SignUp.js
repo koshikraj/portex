@@ -1,9 +1,14 @@
 import React, { useEffect, useState } from 'react';
-import { Button, Modal, Input } from '@geist-ui/react';
+import { Modal, Input } from '@geist-ui/react';
 import * as Icons from 'react-feather';
 import makeStyles from '../makeStyles';
-import {definitions} from "../../utils/config.json"
-import {generateCipherKey, loginUserWithChallenge, registerNewUser} from '../../lib/threadDb';
+import { definitions } from '../../utils/config.json';
+import {
+  generateCipherKey,
+  loginUserWithChallenge,
+  registerNewUser,
+} from '../../lib/threadDb';
+import Router from 'next/router';
 
 const useStyles = makeStyles((ui) => ({
   form: {
@@ -20,44 +25,44 @@ const useStyles = makeStyles((ui) => ({
   },
 }));
 
-function SignUp({ user, idx, setUserData, identity, setUser}) {
-
+function SignUp({ user, idx, setUserData, identity, setUser }) {
   const [email, setEmail] = useState('');
-  const [name, setName] = useState('')
-  const [modal, setModal] = useState(false)
-  const [loading, setLoading] = useState(false)
-  
+  const [name, setName] = useState('');
+  const [modal, setModal] = useState(false);
+  const [loading, setLoading] = useState(false);
+
   useEffect(() => {
-    setModal(user === 1)
-  }, [user] ) 
+    setModal(user === 1);
+  }, [user]);
 
   const closeHandler = (event) => {
+    setUser(0);
+
     setModal(false);
+    Router.push('/');
   };
   const classes = useStyles();
 
-
   const handleSubmit = async () => {
     //ceramic and threaddb
-    const aesKey = await generateCipherKey()
+    const aesKey = await generateCipherKey();
     if (idx) {
-      setLoading(true)
+      setLoading(true);
 
       const client = await loginUserWithChallenge(identity);
       if (client != null) {
-
-        const enc = await idx.ceramic.did.createDagJWE(aesKey, [idx.id])
+        const enc = await idx.ceramic.did.createDagJWE(aesKey, [idx.id]);
 
         const ceramicRes = await idx.set(definitions.profile, {
           name: name,
-          email: email
-        })
+          email: email,
+        });
 
         const encCeramic = await idx.set(definitions.encryptionKey, {
-          key: enc
-        })
+          key: enc,
+        });
 
-        const threadRes = await registerNewUser(idx.id, name, email, enc)
+        const threadRes = await registerNewUser(idx.id, name, email, enc);
 
         setUserData(threadRes);
         if (ceramicRes && threadRes) {
@@ -66,12 +71,12 @@ function SignUp({ user, idx, setUserData, identity, setUser}) {
           setUser(2);
         }
       } else {
-        console.log("Not authenticated with server!!!")
-        setLoading(false)
+        console.log('Not authenticated with server!!!');
+        setLoading(false);
         setModal(false);
       }
     }
-  }
+  };
 
   return (
     <>

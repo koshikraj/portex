@@ -1,5 +1,5 @@
 import React from 'react';
-import { GeistUIThemes, Avatar, Text } from '@geist-ui/react';
+import { Avatar, Text } from '@geist-ui/react';
 import makeStyles from './makeStyles';
 
 const useStyles = makeStyles((ui) => ({
@@ -11,12 +11,15 @@ const useStyles = makeStyles((ui) => ({
     fontSize: 14,
   },
   avatar: {
-    width: '32px !important',
-    height: '32px !important',
+    width: '36px !important',
+    height: '36px !important',
     marginRight: '10px !important',
+    display: 'flex !important',
+    alignItems: 'flexStart',
+    marginLeft: '40px',
   },
   message: {
-    margin: 0,
+    marginBottom: '4px',
     flex: 1,
   },
   created: {
@@ -31,11 +34,13 @@ const EventListItem = ({ children, username, avatar }) => {
   const classes = useStyles();
   return (
     <div className={classes.root}>
-      <Avatar
-        alt={`${username} Avatar`}
-        className={classes.avatar}
-        src={avatar}
-      />
+      <div>
+        <Avatar
+          alt={`${username} Avatar`}
+          className={classes.avatar}
+          src={avatar}
+        />
+      </div>
       <Text className={classes.message}>{children}</Text>
     </div>
   );

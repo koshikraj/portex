@@ -11,6 +11,15 @@ const useStyles = makeStyles((ui) => ({
     flexdirection: 'row',
     alignItems: 'center',
   },
+  content: {
+    display: 'flex',
+    flexDirection: 'row',
+    width: ui.layout.pageWidthWithMargin,
+    maxWidth: '100%',
+    padding: `calc(${ui.layout.gap} * 2) ${ui.layout.pageMargin} calc(${ui.layout.gap} * 4)`,
+    boxSizing: 'border-box',
+    margin: '0 auto',
+  },
   logo: {
     // border: `1px solid ${ui.palette.accents_2}`,
     // borderRadius: '50% !important',
@@ -27,19 +36,20 @@ const Footer = () => {
   const classes = useStyles();
   return (
     <div className={classes.root}>
-      <Image className={classes.logo} src='/logo.png' title='Portex' />
-      <Text>
-        &copy;{new Date().getFullYear()}
-        <Link
-          href='https://github.com/'
-          target='_blank'
-          rel='noopener'
-          pure
-          underline
-        >
-        </Link>
-        .
-      </Text>
+      <div className={classes.content}>
+        <Image className={classes.logo} src='/logo.png' title='Portex' />
+        <Text>
+          &copy;{new Date().getFullYear()}
+          <Link
+            href='https://github.com/consensolabs'
+            target='_blank'
+            rel='noopener'
+            pure
+            underline
+          ></Link>
+          .
+        </Text>
+      </div>
     </div>
   );
 };

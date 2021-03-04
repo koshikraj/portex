@@ -1,13 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import {
-  GeistUIThemes,
-  Avatar,
-  Button,
-  Text,
-  Link,
-  Row,
-  Loading,
-} from '@geist-ui/react';
+import { Avatar, Button, Text, Link, Row, Image } from '@geist-ui/react';
 import makeStyles from './makeStyles';
 import * as Icons from 'react-feather';
 import ProfileCard from './Profile/ProfileCard';
@@ -229,7 +221,13 @@ const Profile = ({ idx, userData }) => {
               })
             ) : (
               <Row style={{ padding: '10px 0' }}>
-                <Text> No portfolios found</Text>
+                {/* <Image
+                    src='/assets/notFound.svg'
+                    alt='No Portfolios Found'
+                    width={350}
+                  /> */}
+
+                <Text>No Portfolios Found</Text>
               </Row>
             )}
           </div>

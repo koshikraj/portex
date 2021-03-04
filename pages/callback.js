@@ -4,7 +4,7 @@ import { OAuthExtension } from '@magic-ext/oauth';
 import Router, { useRouter } from 'next/router';
 import Layout from '../components/Layout';
 import Loader from '../components/modals/Loader';
-import {ethers} from "ethers";
+import { ethers } from 'ethers';
 
 const Callback = (props) => {
   const [magic, setMagic] = useState(null);
@@ -19,25 +19,28 @@ const Callback = (props) => {
           extensions: [new OAuthExtension()],
         })
       );
-      // if(magic){
-      //   let web3Provider = new ethers.providers.Web3Provider(magic.rpcProvider)
-      //   props.handleMagicLinkWeb3(web3Provider).then(data => {
-      //     console.log("Done")
-      //   })
-      // }
+    // if(magic){
+    //   let web3Provider = new ethers.providers.Web3Provider(magic.rpcProvider)
+    //   props.handleMagicLinkWeb3(web3Provider).then(data => {
+    //     console.log("Done")
+    //   })
+    // }
     /* if `provider` is in our query params, the user is logging in with a social provider */
-    magic && router.query.provider ? finishSocialLogin() : finishEmailRedirectLogin();
+    magic && router.query.provider
+      ? finishSocialLogin()
+      : finishEmailRedirectLogin();
   }, [magic, router.query]);
 
   const finishSocialLogin = async () => {
     try {
+      let web3Provider = new ethers.providers.Web3Provider(magic.rpcProvider);
+      await props.handleMagicLinkWeb3(web3Provider);
+      console.log('Done');
       let {
         magic: { idToken },
       } = await magic.oauth.getRedirectResult();
       setShowValidatingToken(true);
-      let web3Provider = new ethers.providers.Web3Provider(magic.rpcProvider)
-       await props.handleMagicLinkWeb3(web3Provider)
-          console.log("Done")
+
       await authenticateWithServer(idToken);
     } catch (error) {
       console.log(error);
@@ -59,13 +62,16 @@ const Callback = (props) => {
   };
 
   const authenticateWithServer = async (didToken) => {
-    let res = await fetch(`${process.env.NEXT_PUBLIC_MIDDLEWARE_URL}/api/login`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: 'Bearer ' + didToken,
-      },
-    });
+    let res = await fetch(
+      `${process.env.NEXT_PUBLIC_MIDDLEWARE_URL}/api/login`,
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: 'Bearer ' + didToken,
+        },
+      }
+    );
     res.status === 200 && Router.push('/');
   };
 
@@ -75,7 +81,11 @@ const Callback = (props) => {
         <div className='error'>{errorMsg}</div>
       ) : (
         <div className='callback-container'>
-            <Loader loading={true} heading="Connecting to Magic Link" content="Fetching data" />
+          <Loader
+            loading={true}
+            heading='Connecting to Magic Link'
+            content='Fetching data'
+          />
           {/* {showValidatingToken && <div className='auth-step'>Validating token...</div>} */}
         </div>
       )}
