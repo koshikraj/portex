@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Button, Modal, Input, Image,  Select } from '@geist-ui/react';
+import { Button, Modal, Input, Image, Select } from '@geist-ui/react';
 import * as Icons from 'react-feather';
 import makeStyles from '../../components/makeStyles';
 const useStyles = makeStyles((ui) => ({
@@ -26,7 +26,9 @@ function AddressModal({ modal, setModal, addAddress }) {
 
   const handleSubmit = () => {
     if (!newAddress) return;
-    addAddress({chain: newChain, address: newAddress}).then(console.log('done'));
+    addAddress({ chain: newChain, address: newAddress }).then(
+      console.log('done')
+    );
     setNewAddress('');
   };
   const classes = useStyles();
@@ -38,17 +40,25 @@ function AddressModal({ modal, setModal, addAddress }) {
         <Modal.Content>
           <div className={classes.form}>
             <div className={classes.input}>
-            <div className={classes.input}>
-              <Select placeholder='Select Chain' className={classes.inputField} onChange={(value) => {setNewChain(value)}}>
-                <Select.Option value='ETH' icon={<Icons.Link2 />}>Ethereum</Select.Option>
-                <Select.Option value='DOGE'>Dogecoin</Select.Option>
-                <Select.Option value='BTC'>Bitcoin</Select.Option>
-                <Select.Option value='BCH'>Bitcoin Cash</Select.Option>
-                <Select.Option value='XRP'>Ripple</Select.Option>
-                <Select.Option value='DOT'>Polkadot</Select.Option>
-                <Select.Option value='XLM'>Stellar</Select.Option>
-              </Select>
-            </div>
+              <div className={classes.input}>
+                <Select
+                  placeholder='Select Chain'
+                  className={classes.inputField}
+                  onChange={(value) => {
+                    setNewChain(value);
+                  }}
+                >
+                  <Select.Option value='ETH' icon={<Icons.Link2 />}>
+                    Ethereum
+                  </Select.Option>
+                  <Select.Option value='DOGE'>Dogecoin</Select.Option>
+                  <Select.Option value='BTC'>Bitcoin</Select.Option>
+                  <Select.Option value='BCH'>Bitcoin Cash</Select.Option>
+                  <Select.Option value='XRP'>Ripple</Select.Option>
+                  <Select.Option value='DOT'>Polkadot</Select.Option>
+                  <Select.Option value='XLM'>Stellar</Select.Option>
+                </Select>
+              </div>
               <Input
                 placeholder='Enter the Address'
                 icon={<Icons.Link2 />}
