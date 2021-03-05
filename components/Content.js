@@ -10,6 +10,7 @@ import {
   getAllUsers,
   requestPortfolio,
   sharePortfolio,
+  rejectPortfolioRequest
 } from '../lib/threadDb';
 import * as Icons from 'react-feather';
 
@@ -164,7 +165,7 @@ const Content = ({idx, user, userData}) => {
   }
 
   const handleAccept = async (receiver) => {
-    
+    console.log("Receiver:",receiver)
     setLoading(true)
     setLoaderData({heading: "Accept Portfolio Request", content: "Accepting portfolio request"})
     const docId = localStorage.getItem('docId');
@@ -173,11 +174,16 @@ const Content = ({idx, user, userData}) => {
     const encKey = await idx.ceramic.did.createDagJWE(dec, [
       receiver.senderDid,
     ]);
-    await sharePortfolio(caller, receiver, docId, encKey);
+    await sharePortfolio(caller, receiver, docId, encKey, receiver.requestId);
     setLoading(false)
   };
 
-  const handleReject = async () => {};
+  const handleReject = async (receiver) => {
+    setLoading(true)
+    setLoaderData({heading: "Reject Portfolio Request", content: "Rejecting portfolio request"})
+    await rejectPortfolioRequest(caller, receiver.requestId)
+    setLoading(false)
+  };
 
   const classes = useStyles();
   return (
@@ -298,7 +304,11 @@ const Content = ({idx, user, userData}) => {
                       >
                         Accept
                       </Button>
-                      <Button size='small' auto>
+                      <Button
+                          size='small'
+                          auto
+                          onClick={() => handleReject(value)}
+                      >
                         Reject
                       </Button>
                     </EventListItem>

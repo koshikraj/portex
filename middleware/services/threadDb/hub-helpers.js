@@ -1,8 +1,6 @@
 const { createAPISig, Client, createUserAuth, PrivateKey } = require('@textile/hub')
 const fs = require('fs')
 const UserRegistration = require('../../models/UserRegistration')
-const DocumentStorage = require('../../models/Document')
-const SignatureDetails = require('../../models/SignatureDetails')
 
 const getAPISig = async (seconds = 300) => {
   const expiration = new Date(Date.now() + 1000 * seconds)
@@ -31,8 +29,6 @@ const initializeNewThreadDb = async () =>{
 
   console.log("Creating tables...")
   await dbClient.newCollection(threadID, {name:'RegisterUser', schema: UserRegistration})
-  await dbClient.newCollection(threadID, {name:'Document', schema: DocumentStorage})
-  await dbClient.newCollection(threadID, {name:'SignatureDetails', schema: SignatureDetails})
   console.log("Tables created!!:")
 
   return threadID.buf

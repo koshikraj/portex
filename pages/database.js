@@ -1,6 +1,6 @@
 import React from 'react'
 import { createAPISig, Client, createUserAuth, PrivateKey }  from '@textile/hub'
-import {getLoginUser, registerNewUser, getAllUsers, sharePortfolio, getSharedPortfolios} from "../lib/threadDb";
+import {getLoginUser, registerNewUser, getAllUsers, sharePortfolio} from "../lib/threadDb";
 
 export default function database(){
 

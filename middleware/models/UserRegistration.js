@@ -7,25 +7,11 @@ const UserRegistration = {
         did: {type:'string'},
         name: {type: 'string'},
         email: {type: 'string'},
-        address: { type: 'string'},
-        publicKey: { type: 'string'},
-        userType: { type: 'number'},
-        nonce: {type:'number'},
-        documentInfo: {
-            type:'array',
-            items: {
-                type: 'object',
-                properties: {
-                    createdBy : {type: 'object'},
-                    sharedTo: {type: 'string'},
-                    date: {type: 'string' },
-                    title: {type: 'string'},
-                    fileName: {type:'string'},
-                    documentId: {type:'string'},
-                    signatureId: {type:'string'}
-                }
-            }
-        }
+        sharedWith: {type:'array'},     // contains user with whom data is shared
+        requests: {type:'array'},       // contains all incoming requests
+        sharedData: {type:'array'},     // contains all shared portfolios
+        requested: {type:'array'},      // contains all outgoing requests
+        aesKey: {type:'object'}
     },
 }
 
