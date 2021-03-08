@@ -33,7 +33,6 @@ const Callback = (props) => {
 
   const finishSocialLogin = async () => {
     try {
-      props.setSignUpMode(1)
       let {
         magic: { idToken },
       } = await magic.oauth.getRedirectResult();

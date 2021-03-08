@@ -47,7 +47,8 @@ function MyApp({ Component, pageProps }) {
     }
     const data = await idx.get(definitions.profile, idx.id);
     setUserData(threadData);
-    setUser(threadData && data ? 2 : 1);
+    setUser((threadData && data) ? 2 : 1);
+    return {idx, identity, threadData}
   };
 
 /*const handleMagicLinkWeb3 = async (provider) => {
