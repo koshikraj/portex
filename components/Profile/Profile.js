@@ -1,24 +1,18 @@
 import React, { useState, useEffect } from 'react';
-import {
-  GeistUIThemes,
-  Avatar,
-  Button,
-  Text,
-  Link,
-  Row,
-  Loading,
-} from '@geist-ui/react';
-import makeStyles from './makeStyles';
+import { Avatar, Button, Text, Link, Row, Image } from '@geist-ui/react';
+import makeStyles from '../makeStyles';
 import * as Icons from 'react-feather';
-import ProfileCard from './Profile/ProfileCard';
-import AddressModal from './Profile/AddressModal';
-import Loader from './modals/Loader';
-import { definitions } from '../utils/config.json';
-import { decryptData, encryptData } from '../lib/threadDb';
+import ProfileCard from './ProfileCard';
+import AddressModal from './AddressModal';
+import EditProfile from '../modals/EditProfile';
+import Loader from '../modals/Loader';
+import { definitions } from '../../utils/config.json';
+import { decryptData, encryptData } from '../../lib/threadDb';
 
 const useStyles = makeStyles((ui) => ({
   root: {
     borderBottom: `solid 1px ${ui.palette.accents_2}`,
+    backgroundColor: ui.background,
   },
   content: {
     display: 'flex',
@@ -28,6 +22,7 @@ const useStyles = makeStyles((ui) => ({
     padding: `calc(${ui.layout.gap} * 2) ${ui.layout.pageMargin} calc(${ui.layout.gap} * 4)`,
     boxSizing: 'border-box',
     margin: '0 auto',
+    borderBottom: `solid 1px ${ui.palette.accents_2}`,
   },
   avatar: {
     width: '100px !important',
@@ -48,7 +43,12 @@ const useStyles = makeStyles((ui) => ({
   username: {
     lineHeight: 1,
   },
-  createProjectButton: {},
+  createProjectButton: {
+    marginLeft: '16px !important',
+  },
+  editProfile: {
+    minWidth: '191px',
+  },
   [`@media screen and (max-width: ${ui.layout.pageWidthWithMargin})`]: {
     createProjectButton: {
       display: 'none !important',
@@ -99,6 +99,7 @@ const Profile = ({ idx, userData }) => {
   const [addressArray, setAddress] = useState([]);
   const [aesKey, setAesKey] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [editName, setEditName] = useState(false);
 
   useEffect(() => {
     async function fetch() {
@@ -157,6 +158,7 @@ const Profile = ({ idx, userData }) => {
         content={'Adding address'}
       />
       <AddressModal modal={modal} setModal={setModal} addAddress={addAddress} />
+      <EditProfile editName={editName} setEditName={setEditName} />
 
       <div className={classes.root}>
         {userData ? (
@@ -171,15 +173,26 @@ const Profile = ({ idx, userData }) => {
                 <Text h2 className={classes.username}>
                   {userData.name}
                 </Text>
-                <Button
-                  className={classes.createProjectButton}
-                  type='secondary'
-                  auto
-                  icon={<Icons.Plus />}
-                  onClick={() => setModal(true)}
-                >
-                  Add New Address
-                </Button>
+                <div>
+                  <Button
+                    className={classes.editProfile}
+                    type='primary'
+                    auto
+                    icon={<Icons.Edit />}
+                    onClick={() => setEditName(true)}
+                  >
+                    Edit Profile
+                  </Button>
+                  <Button
+                    className={classes.createProjectButton}
+                    type='secondary'
+                    auto
+                    icon={<Icons.Plus />}
+                    onClick={() => setModal(true)}
+                  >
+                    Add New Address
+                  </Button>
+                </div>
               </div>
               <div>
                 <div style={{ display: 'flex', alignItems: 'center' }}>
@@ -207,7 +220,12 @@ const Profile = ({ idx, userData }) => {
 
         <div
           className={classes.heading}
-          style={{ marginBottom: '0px', height: '0px', background: 'red' }}
+          style={{
+            marginBottom: '0px',
+            height: '0px',
+            background: 'red',
+            marginTop: '18px',
+          }}
         >
           <Text h4 className={classes.username}>
             My Portfolio Accounts
@@ -229,7 +247,13 @@ const Profile = ({ idx, userData }) => {
               })
             ) : (
               <Row style={{ padding: '10px 0' }}>
-                <Text> No portfolios found</Text>
+                {/* <Image
+                    src='/assets/notFound.svg'
+                    alt='No Portfolios Found'
+                    width={350}
+                  /> */}
+
+                <Text>No Portfolios Found</Text>
               </Row>
             )}
           </div>
