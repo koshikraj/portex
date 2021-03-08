@@ -1,22 +1,17 @@
-import React, { useState, useEffect } from 'react';
-import { GeistUIThemes, Text, Link, Button, Select, Spinner, Row, Col } from '@geist-ui/react';
+import React, {useEffect, useState} from 'react';
+import {Button, Image, Input, Link, Row, Text} from '@geist-ui/react';
 import makeStyles from './makeStyles';
 import EventListItem from './EventListItem.js';
+import SearchResults from './SearchResults';
 import PortfolioCard from './PortfolioCard';
 import Portfolio from './modals/Portfolio';
 import Loader from './modals/Loader';
-import {
-  getLoginUser,
-  getAllUsers,
-  requestPortfolio,
-  sharePortfolio,
-  rejectPortfolioRequest
-} from '../lib/threadDb';
+import {getAllUsers, getLoginUser, rejectPortfolioRequest, requestPortfolio, sharePortfolio} from '../lib/threadDb';
 import * as Icons from 'react-feather';
 
 const useStyles = makeStyles((ui) => ({
   root: {
-    backgroundColor: ui.palette.accents_1,
+    backgroundColor: ui.background,
   },
   content: {
     width: ui.layout.pageWidthWithMargin,
@@ -98,6 +93,10 @@ const useStyles = makeStyles((ui) => ({
     fontSize: 24,
     textAlign: 'center',
   },
+
+  btnAccept: {
+    marginRight: '8px',
+  },
 }));
 
 const Content = ({idx, user, userData}) => {
@@ -112,33 +111,30 @@ const Content = ({idx, user, userData}) => {
   const [portfolioModal, setPortfolioModal] = useState(false)
   const [loading, setLoading] = useState(false)
   const [loaderData, setLoaderData] = useState({})
+  const [searchUser, setSearchUser] = useState('');
 
-  useEffect(()=>{
-    async function load(){
-    
-      if (idx && user===2) {
-      setRequested(userData.requested)
-      setRequests(userData.requests)   
-      setSharedPortfolio(userData.sharedData) 
+  useEffect(() => {
+    async function load() {
+      if (idx && user === 2) {
+        setRequested(userData.requested);
+        setRequests(userData.requests);
+        setSharedPortfolio(userData.sharedData);
 
-      const user = JSON.parse(localStorage.getItem('USER'))
-      const {userArray, caller} = await getAllUsers(user.did)
-      console.log("caller",caller)
-      setCaller(userData)
-      setUserArray(userArray)
-
+        const user = JSON.parse(localStorage.getItem('USER'));
+        const { userArray, caller } = await getAllUsers(user.did);
+        console.log('caller', caller);
+        setCaller(userData);
+        setUserArray(userArray);
       }
     }
-    load()
-  },[idx, user])
+    load();
+  }, [idx, user]);
 
   const onClickCard = (portfolio) => {
     console.log(portfolio)
     setSelectedPortfolio(portfolio); 
     setPortfolioModal(true);
   }
-
-
 
   const handleClick = async () => {
     setLoaderData({heading: "Request Portfolio", content: "Requesting portfolio"})
@@ -206,21 +202,29 @@ const Content = ({idx, user, userData}) => {
             </Row>
           <div className={classes.row}>
             <div className={classes.projects}>
-              {
-
-                (sharedPortfolio.length>0 ?
-                    sharedPortfolio.map((value => {
-                      return(
-                          <PortfolioCard
-                              name={value.senderName}
-                              address={value.senderDid}
-                              email={value.senderEmail}
-                              onClickCard={() => {onClickCard(value)}}
-                          />
-                      )
-                    })) :
-                    <Text>No shared portfolios</Text>)
-              }
+              {sharedPortfolio.length > 0 ? (
+                sharedPortfolio.map((value) => {
+                  return (
+                    <PortfolioCard
+                      name={value.senderName}
+                      address={value.senderDid}
+                      email={value.senderEmail}
+                      onClickCard={() => {
+                        onClickCard(value);
+                      }}
+                    />
+                  );
+                })
+              ) : (
+                // <Text>No shared portfolios</Text>
+                <div style={{ background: '#fff', padding: '24px' }}>
+                  <Image
+                    src='/assets/portfolioNotFound.svg'
+                    alt='No Shared Portfolios'
+                    width={350}
+                  />
+                </div>
+              )}
             </div>
 
             {/* right- */}
@@ -230,7 +234,7 @@ const Content = ({idx, user, userData}) => {
                 Request User Portfolio
               </Text>
               <div className={classes.invite}>
-                <Select
+                {/* <Select
                   placeholder='Choose one'
                   style={{ width: '250px' }}
                   onChange={(value) => {
@@ -246,16 +250,26 @@ const Content = ({idx, user, userData}) => {
                         );
                       })
                     : null}
-                </Select>
+                </Select> */}
+                <Input
+                  placeholder='Search user by Email'
+                  value={searchUser}
+                  onChange={(e) => setSearchUser(e.target.value)}
+                  style={{ width: '230px' }}
+                />
                 <Button
                   size='small'
                   auto
-                  icon={<Icons.Plus />}
+                  icon={<Icons.Search />}
                   type='secondary'
                   onClick={handleClick}
                 >
-                  Request
+                  Search
                 </Button>
+              </div>
+              {/* by default- hide this and render after hitting search btn */}
+              <div className='search-results'>
+                <SearchResults avatar='/assets/avatar.png' />
               </div>
 
               <Text h2 className={classes.activityTitle}>
@@ -293,24 +307,23 @@ const Content = ({idx, user, userData}) => {
                       avatar='/assets/avatar.png'
                       created='3d'
                     >
-                      <b>{value.name}</b> requested portfolio access.
-                      <br />
-                      <br />
-                      <Button
-                        size='small'
-                        auto
-                        type='success'
-                        onClick={() => handleAccept(value)}
-                      >
-                        Accept
-                      </Button>
-                      <Button
+                      <p>
+                        <b>{value.name}</b> requested portfolio access.
+                      </p>
+                      <div className={classes.btn}>
+                        <Button
                           size='small'
                           auto
-                          onClick={() => handleReject(value)}
-                      >
-                        Reject
-                      </Button>
+                          type='success'
+                          onClick={() => handleAccept(value)}
+                          className={classes.btnAccept}
+                        >
+                          Accept
+                        </Button>
+                        <Button size='small' auto>
+                          Reject
+                        </Button>
+                      </div>
                     </EventListItem>
                   );
                 })

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Avatar, Text } from '@geist-ui/react';
+import { Avatar, Text, Button } from '@geist-ui/react';
 import makeStyles from './makeStyles';
 
 const useStyles = makeStyles((ui) => ({
@@ -28,22 +28,40 @@ const useStyles = makeStyles((ui) => ({
     paddingLeft: 10,
     textAlign: 'right',
   },
+  search: {
+    display: 'flex !important',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  requestButton: {
+    marginLeft: 14,
+  },
 }));
 
-const EventListItem = ({ children, username, avatar }) => {
+const SearchResults = ({ children, username, avatar }) => {
   const classes = useStyles();
   return (
     <div className={classes.root}>
-      <div>
+      <div className={classes.search}>
         <Avatar
           alt={`${username} Avatar`}
           className={classes.avatar}
           src={avatar}
         />
+        <Text as p>
+          <b>Name</b>
+        </Text>
+        <Button
+          size='small'
+          auto
+          type='success'
+          className={classes.requestButton}
+        >
+          Request
+        </Button>
       </div>
-      <Text className={classes.message}>{children}</Text>
     </div>
   );
 };
 
-export default EventListItem;
+export default SearchResults;

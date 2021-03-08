@@ -26,30 +26,29 @@ function MyApp({ Component, pageProps }) {
   //   colorSchemeQuery.onchange = (e) => setThemeType(e.matches ? 'dark' : 'light');
   // }
 
-const connectUser = async (provider) => {
-  console.log('connect')
-  const {seed, web3Provider} = await generateSignature(provider);
-  setProvider(web3Provider)
-  const {idx, ceramic} = await generateIDX(seed);
-  setIdx(idx)
+  const connectUser = async (provider) => {
+    console.log('connect');
+    const { seed, web3Provider } = await generateSignature(provider);
+    setProvider(web3Provider);
+    const { idx, ceramic } = await generateIDX(seed);
+    setIdx(idx);
 
-  const identity = PrivateKey.fromRawEd25519Seed(Uint8Array.from(seed))
-  setIdentity(identity)
-  let threadData = null
-  const client = await loginUserWithChallenge(identity);
-  if (client !== null) {
-    //call middleWare
-    setCeramic(ceramic)
-    threadData = await getLoginUser(idx.id)
-    if (!localStorage.getItem("USER")) {
-      localStorage.setItem("USER", JSON.stringify(threadData))
+    const identity = PrivateKey.fromRawEd25519Seed(Uint8Array.from(seed));
+    setIdentity(identity);
+    let threadData = null;
+    const client = await loginUserWithChallenge(identity);
+    if (client !== null) {
+      //call middleWare
+      setCeramic(ceramic);
+      threadData = await getLoginUser(idx.id);
+      if (!localStorage.getItem('USER')) {
+        localStorage.setItem('USER', JSON.stringify(threadData));
+      }
     }
-  }
-  const data = await idx.get(definitions.profile, idx.id)
-  setUserData(threadData)
-  setUser((threadData && data) ? 2 : 1)
-  return {idx, identity, threadData}
-}
+    const data = await idx.get(definitions.profile, idx.id);
+    setUserData(threadData);
+    setUser(threadData && data ? 2 : 1);
+  };
 
 /*const handleMagicLinkWeb3 = async (provider) => {
   try{

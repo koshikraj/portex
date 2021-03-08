@@ -5,86 +5,82 @@ import * as Icons from 'react-feather';
 
 const useStyles = makeStyles((ui) => ({
   root: {
-    borderBottom: `solid 1px ${ui.palette.accents_2}`
+    borderBottom: `solid 1px ${ui.palette.accents_2}`,
   },
-  content: {
-    display: 'flex',
-    flexDirection: 'row',
-    width: ui.layout.pageWidthWithMargin,
-    maxWidth: '100%',
-    padding: `calc(${ui.layout.gap} * 2) ${ui.layout.pageMargin} calc(${ui.layout.gap} * 4)`,
-    boxSizing: 'border-box',
-    margin: '0 auto'
-  },
+
   avatar: {
     width: '100px !important',
     height: '100px !important',
-    marginRight: '30px !important'
+    marginRight: '30px !important',
   },
   name: {
     display: 'flex',
     flexDirection: 'column',
     justifyContent: 'space-between',
-    flex: 1
+    flex: 1,
   },
   title: {
     display: 'flex',
     flexDirection: 'row',
-    justifyContent: 'space-between'
+    justifyContent: 'space-between',
   },
   username: {
-    lineHeight: 1
+    lineHeight: 1,
   },
   createProjectButton: {},
   [`@media screen and (max-width: ${ui.layout.pageWidthWithMargin})`]: {
     createProjectButton: {
-      display: 'none !important'
+      display: 'none !important',
     },
     avatar: {
       width: '80px !important',
       height: '80px !important',
-      marginRight: '20px !important'
+      marginRight: '20px !important',
     },
     username: {
-      fontSize: 24
-    }
+      fontSize: 24,
+    },
   },
   integrationsTitle: {
     textTransform: 'uppercase',
     color: `${ui.palette.accents_5} !important`,
     fontWeight: 500,
     fontSize: 12,
-    margin: 0
+    margin: 0,
   },
   integrationsUsername: {
     margin: '0 0 0 4px',
-    fontWeight: 0
-  }
+    fontWeight: 0,
+  },
 }));
 
 const Settings = () => {
   const classes = useStyles();
   return (
     <div className={classes.root}>
-      <div className={classes.content}>
-        <div className={classes.name}>
-          <div className={classes.title}>
-            <Text h2 className={classes.username}>
-              Consenso Labs
-            </Text>
-            <Button className={classes.createProjectButton} type="secondary" auto>
-              Update Settings
-            </Button>
-          </div>
-          <div>
-            <Text className={classes.integrationsTitle}>Git Integrations</Text>
-            <Link href="https://github.com/consensolabs" target="_blank" rel="noopener" pure underline>
-              <div style={{ display: 'flex', alignItems: 'center' }}>
-                <Icons.GitHub size={16} aria-label="Github" />
-                <Text className={classes.integrationsUsername}>consensolabs</Text>
-              </div>
-            </Link>
-          </div>
+      <div className={classes.name}>
+        <div className={classes.title}>
+          <Text h2 className={classes.username}>
+            Consenso Labs
+          </Text>
+          <Button className={classes.createProjectButton} type='secondary' auto>
+            Update Settings
+          </Button>
+        </div>
+        <div>
+          <Text className={classes.integrationsTitle}>Git Integrations</Text>
+          <Link
+            href='https://github.com/consensolabs'
+            target='_blank'
+            rel='noopener'
+            pure
+            underline
+          >
+            <div style={{ display: 'flex', alignItems: 'center' }}>
+              <Icons.GitHub size={16} aria-label='Github' />
+              <Text className={classes.integrationsUsername}>consensolabs</Text>
+            </div>
+          </Link>
         </div>
       </div>
     </div>
