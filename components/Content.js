@@ -13,6 +13,7 @@ import {
 
 import makeStyles from './makeStyles';
 import EventListItem from './EventListItem.js';
+import SearchResults from './SearchResults';
 import PortfolioCard from './PortfolioCard';
 import Portfolio from './modals/Portfolio';
 import Loader from './modals/Loader';
@@ -26,7 +27,7 @@ import * as Icons from 'react-feather';
 
 const useStyles = makeStyles((ui) => ({
   root: {
-    backgroundColor: ui.palette.accents_1,
+    backgroundColor: ui.background,
   },
   content: {
     width: ui.layout.pageWidthWithMargin,
@@ -283,12 +284,16 @@ const Content = ({ idx, user, userData }) => {
                 <Button
                   size='small'
                   auto
-                  icon={<Icons.Plus />}
+                  icon={<Icons.Search />}
                   type='secondary'
                   onClick={handleClick}
                 >
-                  Request
+                  Search
                 </Button>
+              </div>
+              {/* by default- hide this and render after hitting search btn */}
+              <div className='search-results'>
+                <SearchResults avatar='/assets/avatar.png' />
               </div>
 
               <Text h2 className={classes.activityTitle}>
