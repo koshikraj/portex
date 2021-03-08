@@ -3,7 +3,7 @@ import { Button, Modal, Input } from '@geist-ui/react';
 import * as Icons from 'react-feather';
 import makeStyles from '../makeStyles';
 import {definitions} from "../../utils/config.json"
-import {generateCipherKey, loginUserWithChallenge, registerNewUser} from '../../lib/threadDb';
+import {generateCipherKey, loginUserWithChallenge, registerNewUser, checkEmailExists} from '../../lib/threadDb';
 
 const useStyles = makeStyles((ui) => ({
   form: {
@@ -46,24 +46,32 @@ function SignUp({ user, idx, setUserData, identity, setUser}) {
       const client = await loginUserWithChallenge(identity);
       if (client != null) {
 
-        const enc = await idx.ceramic.did.createDagJWE(aesKey, [idx.id])
+        const emailStatus = await checkEmailExists(email)
+        if (!emailStatus){
+          const enc = await idx.ceramic.did.createDagJWE(aesKey, [idx.id])
 
-        const ceramicRes = await idx.set(definitions.profile, {
-          name: name,
-          email: email
-        })
+          const ceramicRes = await idx.set(definitions.profile, {
+            name: name,
+            email: email
+          })
 
-        const encCeramic = await idx.set(definitions.encryptionKey, {
-          key: enc
-        })
+          const encCeramic = await idx.set(definitions.encryptionKey, {
+            key: enc
+          })
 
-        const threadRes = await registerNewUser(idx.id, name, email, enc)
+          const threadRes = await registerNewUser(idx.id, name, email, enc, 0)
 
-        setUserData(threadRes);
-        if (ceramicRes && threadRes) {
-          setLoading(false);
+          setUserData(threadRes);
+          if (ceramicRes && threadRes) {
+            setLoading(false);
+            setModal(false);
+            setUser(2);
+          }
+        }else {
+          // popup
+          alert("Email exists!!!")
+          setLoading(false)
           setModal(false);
-          setUser(2);
         }
       } else {
         console.log("Not authenticated with server!!!")

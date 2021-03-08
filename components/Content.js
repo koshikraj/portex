@@ -235,7 +235,7 @@ const Content = ({idx, user, userData}) => {
                     ? userArray.map((value, index) => {
                         return (
                           <Select.Option key={index} value={index.toString()}>
-                            {value.name}
+                            {value.email}
                           </Select.Option>
                         );
                       })
