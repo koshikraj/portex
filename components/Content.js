@@ -21,7 +21,7 @@ import {
   getLoginUser,
   getAllUsers,
   requestPortfolio,
-  sharePortfolio,
+  sharePortfolio, checkEmailExists,
 } from '../lib/threadDb';
 import * as Icons from 'react-feather';
 
@@ -152,19 +152,26 @@ const Content = ({ idx, user, userData }) => {
   };
 
   const handleClick = async () => {
+    console.log("Search user:",searchUser)
     setLoaderData({
       heading: 'Request Portfolio',
       content: 'Requesting portfolio',
     });
     setLoading(true);
-    const res = await requestPortfolio(caller, userArray[selectedUser]);
-    if (res) {
-      requested.push({
-        receiverDid: userArray[selectedUser].did,
-        name: userArray[selectedUser].name,
-      });
+    const {status, user} = await checkEmailExists(searchUser)
+    if (!status) {
+      const res = await requestPortfolio(caller, user);
+      if (res) {
+        requested.push({
+          receiverDid: user.did,
+          name: user.name,
+        });
+      }
+      setLoading(false);
+    }else{
+      setLoading(false);
+      alert("Enter valid email id")
     }
-    setLoading(false);
   };
 
   const fetchUserDetails = async () => {
@@ -192,7 +199,7 @@ const Content = ({ idx, user, userData }) => {
     const encKey = await idx.ceramic.did.createDagJWE(dec, [
       receiver.senderDid,
     ]);
-    await sharePortfolio(caller, receiver, docId, encKey);
+    await sharePortfolio(caller, receiver, docId, encKey, receiver.requestId);
     setLoading(false);
   };
 

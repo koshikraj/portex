@@ -1,7 +1,8 @@
-import React from 'react';
+import React, {useState} from 'react';
 import { Modal, Input } from '@geist-ui/react';
 import makeStyles from '../makeStyles';
 import * as Icons from 'react-feather';
+import {updateName} from "../../lib/threadDb";
 
 const useStyles = makeStyles((ui) => ({
   form: {
@@ -18,8 +19,20 @@ const useStyles = makeStyles((ui) => ({
   },
 }));
 
-function EditProfie({ editName, setEditName }) {
+function EditProfie({ editName, setEditName, email }) {
   const classes = useStyles();
+
+  const [name, setName] = useState(null)
+
+  const handleSubmit = async ()=>{
+    console.log("Name:", name)
+    console.log("Email:", email)
+    const status = await updateName(name, email)
+    if (status)
+      alert("Updated")
+    else
+      alert("SOme error!!1 try latter")
+  }
 
   return (
     <Modal open={editName} onClose={() => setEditName(false)}>
@@ -40,7 +53,7 @@ function EditProfie({ editName, setEditName }) {
       <Modal.Action passive onClick={() => setEditName(false)}>
         Cancel
       </Modal.Action>
-      <Modal.Action>Submit</Modal.Action>
+      <Modal.Action onClick={handleSubmit}>Submit</Modal.Action>
     </Modal>
   );
 }

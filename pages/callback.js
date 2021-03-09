@@ -89,8 +89,8 @@ const Callback = (props) => {
       const client = await loginUserWithChallenge(identity);
       if (client != null) {
 
-        const emailStatus = await checkEmailExists(email)
-        if (!emailStatus){
+        const {status} = await checkEmailExists(email)
+        if (status){
           const enc = await idx.ceramic.did.createDagJWE(aesKey, [idx.id])
 
           const ceramicRes = await idx.set(definitions.profile, {

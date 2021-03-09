@@ -158,7 +158,7 @@ const Profile = ({ idx, userData }) => {
         content={'Adding address'}
       />
       <AddressModal modal={modal} setModal={setModal} addAddress={addAddress} />
-      <EditProfile editName={editName} setEditName={setEditName} />
+      <EditProfile editName={editName} setEditName={setEditName} email={userData.email}/>
 
       <div className={classes.root}>
         {userData ? (

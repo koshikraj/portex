@@ -45,8 +45,8 @@ function SignUp({ user, idx, setUserData, identity, setUser}) {
 
       const client = await loginUserWithChallenge(identity);
       if (client != null) {
-        const emailStatus = await checkEmailExists(email)
-        if (!emailStatus) {
+        const {status} = await checkEmailExists(email)
+        if (status) {
           const enc = await idx.ceramic.did.createDagJWE(aesKey, [idx.id])
 
           const ceramicRes = await idx.set(definitions.profile, {
@@ -71,6 +71,7 @@ function SignUp({ user, idx, setUserData, identity, setUser}) {
           alert("Email exists!!!")
           setLoading(false)
           setModal(false);
+          //setUser(0)
         }
       } else {
         console.log("Not authenticated with server!!!")
