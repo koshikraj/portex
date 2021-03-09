@@ -5,6 +5,8 @@ import Router, { useRouter } from 'next/router';
 import Layout from '../components/Layout';
 import Loader from '../components/modals/Loader';
 import {ethers} from "ethers";
+import {checkEmailExists, generateCipherKey, loginUserWithChallenge, registerNewUser} from "../lib/threadDb";
+import {definitions} from "../utils/config.json";
 
 const Callback = (props) => {
   const [magic, setMagic] = useState(null);
@@ -36,9 +38,9 @@ const Callback = (props) => {
       } = await magic.oauth.getRedirectResult();
       setShowValidatingToken(true);
       let web3Provider = new ethers.providers.Web3Provider(magic.rpcProvider)
-       await props.handleMagicLinkWeb3(web3Provider)
-          console.log("Done")
-      await authenticateWithServer(idToken);
+      const {idx, identity, threadData}=await props.handleMagicLinkWeb3(web3Provider)
+      console.log("Done")
+      await authenticateWithServer(idToken, idx, identity, threadData);
     } catch (error) {
       console.log(error);
       setErrorMsg('Error logging in. Please try again.');
@@ -58,7 +60,7 @@ const Callback = (props) => {
     }
   };
 
-  const authenticateWithServer = async (didToken) => {
+  const authenticateWithServer = async (didToken, idx, identity, threadData) => {
     let res = await fetch(`${process.env.NEXT_PUBLIC_MIDDLEWARE_URL}/api/login`, {
       method: 'POST',
       headers: {
@@ -66,8 +68,55 @@ const Callback = (props) => {
         Authorization: 'Bearer ' + didToken,
       },
     });
-    res.status === 200 && Router.push('/');
+    //res.status === 200 && Router.push('/');
+
+    if (res.status === 200){
+      let userMetadata = await magic.user.getMetadata();
+      console.log("threadData:",threadData)
+      console.log("User:", userMetadata)
+      if (threadData===null){
+        await registerMagicLinkUser(idx, identity, userMetadata.email)
+      }else{
+        console.log("User already registered!!")
+      }
+    }
+    Router.push('/')
   };
+
+  const registerMagicLinkUser = async (idx, identity, email)=>{
+    const aesKey = await generateCipherKey()
+    if (idx) {
+      const client = await loginUserWithChallenge(identity);
+      if (client != null) {
+
+        const emailStatus = await checkEmailExists(email)
+        if (!emailStatus){
+          const enc = await idx.ceramic.did.createDagJWE(aesKey, [idx.id])
+
+          const ceramicRes = await idx.set(definitions.profile, {
+            name: ' ',
+            email: email
+          })
+
+          const encCeramic = await idx.set(definitions.encryptionKey, {
+            key: enc
+          })
+
+          const threadRes = await registerNewUser(idx.id, ' ', email, enc, 1)
+
+          props.setUserData(threadRes);
+          if (ceramicRes && threadRes) {
+            props.setUser(2);
+          }
+        }else {
+          // popup
+          alert("Email exists22!!!")
+        }
+      } else {
+        console.log("Not authenticated with server!!!")
+      }
+    }
+  }
 
   return (
     <Layout>
