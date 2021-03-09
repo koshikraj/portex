@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-// import Link from 'next/link';
 import { useRouter } from 'next/router';
 import {
   GeistUIThemes,
@@ -92,26 +91,7 @@ const useStyles = makeStyles((ui) => ({
   },
 }));
 
-const popoverContent = () => (
-  <>
-    <Popover.Item title>
-      <span>User Settings</span>
-    </Popover.Item>
-    <Popover.Item>
-      <Link>Teams</Link>
-    </Popover.Item>
-    <Popover.Item>
-      <Link href='https://github.com/koshikraj/portex'>GitHub</Link>
-    </Popover.Item>
-    <Popover.Item line />
-    <Popover.Item>
-      <Link>Logout</Link>
-    </Popover.Item>
-  </>
-);
-
 const Menu = ({ toggleDarkMode, connectUser, provider, user }) => {
-  
   const [modal, setModal] = useState(false);
   const classes = useStyles();
   const theme = useTheme();
@@ -136,7 +116,12 @@ const Menu = ({ toggleDarkMode, connectUser, provider, user }) => {
 
   return (
     <>
-      <Connect modal={modal} setModal={setModal} connectUser={connectUser} userConnected={user}/>
+      <Connect
+        modal={modal}
+        setModal={setModal}
+        connectUser={connectUser}
+        userConnected={user}
+      />
       <div className={classes.header}>
         <div className={classes.headerContent}>
           <div style={{ display: 'flex' }}>
@@ -156,19 +141,8 @@ const Menu = ({ toggleDarkMode, connectUser, provider, user }) => {
               {isDark ? <Icons.Sun size={16} /> : <Icons.Moon size={16} />}
             </Button>
 
-            <Popover
-              content={popoverContent}
-              placement='bottomEnd'
-              portalClassName={classes.popover}
-            >
-              <Avatar text='CL' />
-            </Popover>
-            <Button
-              auto
-              type='abort'
-              onClick={setModal}
-            >
-            {user===2 ?  "Disconnect" : "Connect" }
+            <Button auto type='abort' onClick={setModal}>
+              {user === 2 ? 'Disconnect' : 'Connect'}
             </Button>
           </div>
         </div>
@@ -182,11 +156,7 @@ const Menu = ({ toggleDarkMode, connectUser, provider, user }) => {
             }}
           >
             <Tabs.Item label='Overview' value='/' />
-            {/* replace path with :id -> /requests/:id */}
-            <Tabs.Item
-              label='All Requests'
-              value='/requests/accessrequest'
-            />
+
             <Tabs.Item label='My Profile' value='/profile' />
           </Tabs>
         </div>
