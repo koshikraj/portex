@@ -1,9 +1,14 @@
 import React, { useEffect, useState } from 'react';
-import { Button, Modal, Input } from '@geist-ui/react';
+import { useToasts, Modal, Input } from '@geist-ui/react';
 import * as Icons from 'react-feather';
 import makeStyles from '../makeStyles';
-import {definitions} from "../../utils/config.json"
-import {generateCipherKey, loginUserWithChallenge, registerNewUser, checkEmailExists} from '../../lib/threadDb';
+import { definitions } from '../../utils/config.json';
+import {
+  generateCipherKey,
+  loginUserWithChallenge,
+  registerNewUser,
+  checkEmailExists,
+} from '../../lib/threadDb';
 
 const useStyles = makeStyles((ui) => ({
   form: {
@@ -20,45 +25,44 @@ const useStyles = makeStyles((ui) => ({
   },
 }));
 
-function SignUp({ user, idx, setUserData, identity, setUser}) {
-
+function SignUp({ user, idx, setUserData, identity, setUser }) {
   const [email, setEmail] = useState('');
-  const [name, setName] = useState('')
-  const [modal, setModal] = useState(false)
-  const [loading, setLoading] = useState(false)
-  
+  const [name, setName] = useState('');
+  const [modal, setModal] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [signUpToast, setToast] = useToasts(false);
+
   useEffect(() => {
-    setModal(user === 1)
-  }, [user] ) 
+    setModal(user === 1);
+  }, [user]);
 
   const closeHandler = (event) => {
     setModal(false);
   };
   const classes = useStyles();
 
-
   const handleSubmit = async () => {
     //ceramic and threaddb
-    const aesKey = await generateCipherKey()
+    const aesKey = await generateCipherKey();
     if (idx) {
-      setLoading(true)
+      setLoading(true);
 
       const client = await loginUserWithChallenge(identity);
       if (client != null) {
-        const {status} = await checkEmailExists(email)
+        const { status } = await checkEmailExists(email);
         if (status) {
-          const enc = await idx.ceramic.did.createDagJWE(aesKey, [idx.id])
+          const enc = await idx.ceramic.did.createDagJWE(aesKey, [idx.id]);
 
           const ceramicRes = await idx.set(definitions.profile, {
             name: name,
-            email: email
-          })
+            email: email,
+          });
 
           const encCeramic = await idx.set(definitions.encryptionKey, {
-            key: enc
-          })
+            key: enc,
+          });
 
-          const threadRes = await registerNewUser(idx.id, name, email, enc,0)
+          const threadRes = await registerNewUser(idx.id, name, email, enc, 0);
 
           setUserData(threadRes);
           if (ceramicRes && threadRes) {
@@ -66,20 +70,24 @@ function SignUp({ user, idx, setUserData, identity, setUser}) {
             setModal(false);
             setUser(2);
           }
-        }else {
-          // popup
-          alert("Email exists!!!")
-          setLoading(false)
-          setModal(false);
+        } else {
+          setToast({
+            text: 'This Email already Exists, Please try with new Email',
+            type: 'warning',
+            delay: 5000,
+          });
+
+          setLoading(false);
+          setModal(true);
           //setUser(0)
         }
       } else {
-        console.log("Not authenticated with server!!!")
-        setLoading(false)
+        console.log('Not authenticated with server!!!');
+        setLoading(false);
         setModal(false);
       }
     }
-  }
+  };
 
   return (
     <>
