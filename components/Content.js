@@ -9,11 +9,13 @@ import {
   Row,
   Input,
   Image,
+  useToasts,
+  useModal,
 } from '@geist-ui/react';
 
 import makeStyles from './makeStyles';
 import EventListItem from './EventListItem.js';
-import SearchResults from './SearchResults';
+import SearchResultsModal from './modals/SearchResults';
 import PortfolioCard from './PortfolioCard';
 import Portfolio from './modals/Portfolio';
 import Loader from './modals/Loader';
@@ -21,7 +23,8 @@ import {
   getLoginUser,
   getAllUsers,
   requestPortfolio,
-  sharePortfolio, checkEmailExists,
+  sharePortfolio,
+  checkEmailExists,
 } from '../lib/threadDb';
 import * as Icons from 'react-feather';
 
@@ -118,7 +121,7 @@ const useStyles = makeStyles((ui) => ({
 const Content = ({ idx, user, userData }) => {
   const [caller, setCaller] = useState(null);
   const [userArray, setUserArray] = useState([{}]);
-  const [selectedUser, setSelectedUser] = useState(0);
+
   const [requested, setRequested] = useState([]);
   const [requests, setRequests] = useState([]);
   const [sharedPortfolio, setSharedPortfolio] = useState([]);
@@ -127,7 +130,11 @@ const Content = ({ idx, user, userData }) => {
   const [loading, setLoading] = useState(false);
   const [loaderData, setLoaderData] = useState({});
   const [searchUser, setSearchUser] = useState('');
+  const [userEmail, setUserEmail] = useState('');
+  const [searchResults, setSearchResults] = useState(false);
+  const [, setToast] = useToasts();
 
+  console.log('SEARCHRESULTS', searchResults);
   useEffect(() => {
     async function load() {
       if (idx && user === 2) {
@@ -152,25 +159,37 @@ const Content = ({ idx, user, userData }) => {
   };
 
   const handleClick = async () => {
-    console.log("Search user:",searchUser)
     setLoaderData({
-      heading: 'Request Portfolio',
-      content: 'Requesting portfolio',
+      heading: 'Searching User',
+      content: 'Searching user',
     });
     setLoading(true);
-    const {status, user} = await checkEmailExists(searchUser)
+
+    setSearchResults(true);
+
+    const { status, user } = await checkEmailExists(searchUser);
     if (!status) {
-      const res = await requestPortfolio(caller, user);
-      if (res) {
-        requested.push({
-          receiverDid: user.did,
-          name: user.name,
-        });
-      }
+      // const res = await requestPortfolio(caller, user);
+
+      // if (res) {
+      //   requested.push({
+      //     receiverDid: user.did,
+      //     name: user.name,
+      //   });
+      // }
       setLoading(false);
-    }else{
+      setSearchResults(true);
+
+      setUserEmail(user.email);
+      console.log('User EMAILLLLL', userEmail);
+      setSearchResults(true);
+    } else {
       setLoading(false);
-      alert("Enter valid email id")
+
+      setToast({
+        text: 'Enter valid email id',
+        type: 'warning',
+      });
     }
   };
 
@@ -211,6 +230,13 @@ const Content = ({ idx, user, userData }) => {
         heading={loaderData.heading}
         content={loaderData.content}
       />
+      <SearchResultsModal
+        avatar='/assets/avatar.png'
+        searchResults={searchResults}
+        setSearchResults={setSearchResults}
+        userEmail={userEmail}
+      />
+      {/* <TestModal searchResults={searchResults} /> */}
       <Portfolio
         state={portfolioModal}
         idx={idx}
@@ -265,24 +291,8 @@ const Content = ({ idx, user, userData }) => {
                 Request User Portfolio
               </Text>
               <div className={classes.invite}>
-                {/* <Select
-                  placeholder='Choose one'
-                  style={{ width: '250px' }}
-                  onChange={(value) => {
-                    setSelectedUser(parseInt(value));
-                  }}
-                >
-                  {userArray.length > 0
-                    ? userArray.map((value, index) => {
-                        return (
-                          <Select.Option key={index} value={index.toString()}>
-                            {value.email}
-                          </Select.Option>
-                        );
-                      })
-                    : null}
-                </Select> */}
                 <Input
+                  type='email'
                   placeholder='Search user by Email'
                   value={searchUser}
                   onChange={(e) => setSearchUser(e.target.value)}
@@ -299,9 +309,9 @@ const Content = ({ idx, user, userData }) => {
                 </Button>
               </div>
               {/* by default- hide this and render after hitting search btn */}
-              <div className='search-results'>
+              {/* <div className='search-results'>
                 <SearchResults avatar='/assets/avatar.png' />
-              </div>
+              </div> */}
 
               <Text h2 className={classes.activityTitle}>
                 Recent Activities
