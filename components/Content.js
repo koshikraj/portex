@@ -131,6 +131,8 @@ const Content = ({ idx, user, userData }) => {
   const [loaderData, setLoaderData] = useState({});
   const [searchUser, setSearchUser] = useState('');
   const [userEmail, setUserEmail] = useState('');
+  const [reciverDetails, setReciverDetails] = useState(null);
+
   const [searchResults, setSearchResults] = useState(false);
   const [, setToast] = useToasts();
 
@@ -165,29 +167,19 @@ const Content = ({ idx, user, userData }) => {
     });
     setLoading(true);
 
-    setSearchResults(true);
-
     const { status, user } = await checkEmailExists(searchUser);
     if (!status) {
-      // const res = await requestPortfolio(caller, user);
-
-      // if (res) {
-      //   requested.push({
-      //     receiverDid: user.did,
-      //     name: user.name,
-      //   });
-      // }
       setLoading(false);
       setSearchResults(true);
 
-      setUserEmail(user.email);
+      setUserEmail(user.name);
+      setReciverDetails(user);
       console.log('User EMAILLLLL', userEmail);
-      setSearchResults(true);
     } else {
       setLoading(false);
 
       setToast({
-        text: 'Enter valid email id',
+        text: 'User not found, please check the Email ID',
         type: 'warning',
       });
     }
@@ -235,6 +227,9 @@ const Content = ({ idx, user, userData }) => {
         searchResults={searchResults}
         setSearchResults={setSearchResults}
         userEmail={userEmail}
+        reciverDetails={reciverDetails}
+        caller={caller}
+        requested={requested}
       />
       {/* <TestModal searchResults={searchResults} /> */}
       <Portfolio
@@ -308,10 +303,6 @@ const Content = ({ idx, user, userData }) => {
                   Search
                 </Button>
               </div>
-              {/* by default- hide this and render after hitting search btn */}
-              {/* <div className='search-results'>
-                <SearchResults avatar='/assets/avatar.png' />
-              </div> */}
 
               <Text h2 className={classes.activityTitle}>
                 Recent Activities

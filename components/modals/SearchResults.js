@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
   Avatar,
   Text,
@@ -8,57 +8,49 @@ import {
   Row,
   Table,
 } from '@geist-ui/react';
-import makeStyles from '../makeStyles';
-
-const useStyles = makeStyles((ui) => ({
-  root: {
-    borderBottom: `solid 1px ${ui.palette.accents_2}`,
-    padding: '10px 0px',
-    alignItems: 'center',
-    display: 'flex',
-    fontSize: 14,
-  },
-  avatar: {
-    width: '36px !important',
-    height: '36px !important',
-    marginRight: '10px !important',
-    display: 'flex !important',
-    alignItems: 'flexStart',
-    marginLeft: '40px',
-  },
-  message: {
-    marginBottom: '4px',
-    flex: 1,
-  },
-  created: {
-    color: 'rgb(153, 153, 153) !important',
-    margin: '0 0 0 auto',
-    paddingLeft: 10,
-    textAlign: 'right',
-  },
-  search: {
-    display: 'flex !important',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  requestButton: {
-    marginLeft: 14,
-  },
-}));
+import { requestPortfolio } from '../../lib/threadDb';
+import Loader from './Loader';
 
 const SearchResultsModal = ({
   userEmail,
   avatar,
   setSearchResults,
   searchResults,
+  reciverDetails,
+  requested,
+  caller,
 }) => {
-  const classes = useStyles();
+  const [loading, setLoading] = useState(false);
+  const [loaderData, setLoaderData] = useState({});
+
+  // request portfolio
+
+  async function handelRequest() {
+    setLoaderData({
+      heading: 'Requesting Portfolio',
+      content: 'Requesting Portfolio',
+    });
+    setLoading(true);
+    const res = await requestPortfolio(caller, reciverDetails);
+    if (res) {
+      requested.push({
+        receiverDid: reciverDetails.did,
+        name: reciverDetails.name,
+      });
+    }
+    setSearchResults(false);
+    setLoaderData({
+      heading: 'Portfolio Requested successfully',
+      content: 'Portfolio Requested Successfully',
+    });
+    setLoading(false);
+  }
 
   const data = [
     {
       email: userEmail,
       actions: (
-        <Button auto type='success' size='mini'>
+        <Button auto type='success' size='mini' onClick={handelRequest}>
           Request
         </Button>
       ),
@@ -66,6 +58,11 @@ const SearchResultsModal = ({
   ];
   return (
     <>
+      <Loader
+        loading={loading}
+        heading={loaderData.heading}
+        content={loaderData.content}
+      />
       <Modal open={searchResults} disableBackdropClick={true}>
         <Modal.Title>Search Results</Modal.Title>
 
