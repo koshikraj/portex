@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Avatar, Button, Text, Link, Row } from '@geist-ui/react';
+import { Avatar, Button, Text, Link, Row, Image } from '@geist-ui/react';
 import makeStyles from '../makeStyles';
 import * as Icons from 'react-feather';
 import ProfileCard from './ProfileCard';
@@ -158,7 +158,11 @@ const Profile = ({ idx, userData }) => {
         content={'Adding address'}
       />
       <AddressModal modal={modal} setModal={setModal} addAddress={addAddress} />
-      <EditProfile editName={editName} setEditName={setEditName} email={userData.email}/>
+      <EditProfile
+        editName={editName}
+        setEditName={setEditName}
+        email={userData.email}
+      />
 
       <div className={classes.root}>
         {userData ? (
@@ -247,13 +251,11 @@ const Profile = ({ idx, userData }) => {
               })
             ) : (
               <Row style={{ padding: '10px 0' }}>
-                {/* <Image
-                    src='/assets/notFound.svg'
-                    alt='No Portfolios Found'
-                    width={350}
-                  /> */}
-
-                <Text>No Portfolios Found</Text>
+                <Image
+                  src='/assets/notFound.svg'
+                  alt='No Portfolios Found'
+                  width={350}
+                />
               </Row>
             )}
           </div>
