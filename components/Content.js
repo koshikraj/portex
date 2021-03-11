@@ -24,7 +24,7 @@ import {
   getAllUsers,
   requestPortfolio,
   sharePortfolio,
-  checkEmailExists,
+  checkEmailExists, rejectPortfolioRequest,
 } from '../lib/threadDb';
 import * as Icons from 'react-feather';
 
@@ -167,19 +167,26 @@ const Content = ({ idx, user, userData }) => {
     });
     setLoading(true);
 
-    const { status, user } = await checkEmailExists(searchUser);
-    if (!status) {
-      setLoading(false);
-      setSearchResults(true);
+    if (searchUser !== caller.email) {
+      const {status, user} = await checkEmailExists(searchUser);
+      if (!status) {
+        setLoading(false);
+        setSearchResults(true);
 
-      setUserEmail(user.name);
-      setReciverDetails(user);
-      console.log('User EMAILLLLL', userEmail);
+        setUserEmail(user.name);
+        setReciverDetails(user);
+        console.log('User EMAILLLLL', userEmail);
+      } else {
+        setLoading(false);
+        setToast({
+          text: 'User not found, please check the Email ID',
+          type: 'warning',
+        });
+      }
     } else {
       setLoading(false);
-
       setToast({
-        text: 'User not found, please check the Email ID',
+        text: 'Please enter valid email',
         type: 'warning',
       });
     }
@@ -212,6 +219,13 @@ const Content = ({ idx, user, userData }) => {
     ]);
     await sharePortfolio(caller, receiver, docId, encKey, receiver.requestId);
     setLoading(false);
+  };
+
+  const handleReject = async (receiver) => {
+    setLoading(true)
+    setLoaderData({heading: "Reject Portfolio Request", content: "Rejecting portfolio request"})
+    await rejectPortfolioRequest(caller, receiver.requestId)
+    setLoading(false)
   };
 
   const classes = useStyles();
@@ -352,7 +366,11 @@ const Content = ({ idx, user, userData }) => {
                         >
                           Accept
                         </Button>
-                        <Button size='small' auto>
+                        <Button
+                          size='small'
+                          auto
+                          onClick={() => handleReject(value)}
+                        >
                           Reject
                         </Button>
                       </div>
