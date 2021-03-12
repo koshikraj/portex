@@ -99,7 +99,8 @@ const Profile = ({ idx, userData }) => {
   const [addressArray, setAddress] = useState([]);
   const [aesKey, setAesKey] = useState(null);
   const [loading, setLoading] = useState(false);
-  const [editName, setEditName] = useState(false);
+  const [editProfile, setEditProfile] = useState(false);
+  const [profileData, setProfileData] = useState({});
 
   useEffect(() => {
     async function fetch() {
@@ -130,7 +131,8 @@ const Profile = ({ idx, userData }) => {
       }
     }
     fetch();
-  }, [idx]);
+    setProfileData(userData);
+  }, [idx, userData]);
 
   const addAddress = async (newAddress) => {
     setLoading(true);
@@ -159,13 +161,14 @@ const Profile = ({ idx, userData }) => {
       />
       <AddressModal modal={modal} setModal={setModal} addAddress={addAddress} />
       <EditProfile
-        editName={editName}
-        setEditName={setEditName}
-        email={userData.email}
+        editProfile={editProfile}
+        setEditProfile={setEditProfile}
+        profileData={profileData}
+        setProfileData={setProfileData}
       />
 
       <div className={classes.root}>
-        {userData ? (
+        {profileData ? (
           <div className={classes.content}>
             <Avatar
               alt='Your Avatar'
@@ -175,7 +178,7 @@ const Profile = ({ idx, userData }) => {
             <div className={classes.name}>
               <div className={classes.title}>
                 <Text h2 className={classes.username}>
-                  {userData.name}
+                  {profileData.name}
                 </Text>
                 <div>
                   <Button
@@ -183,7 +186,7 @@ const Profile = ({ idx, userData }) => {
                     type='primary'
                     auto
                     icon={<Icons.Edit />}
-                    onClick={() => setEditName(true)}
+                    onClick={() => setEditProfile(true)}
                   >
                     Edit Profile
                   </Button>
@@ -202,7 +205,7 @@ const Profile = ({ idx, userData }) => {
                 <div style={{ display: 'flex', alignItems: 'center' }}>
                   <Icons.Mail size={16} aria-label='Email' />
                   <Text className={classes.integrationsUsername}>
-                    {userData.email}
+                    {profileData.email}
                   </Text>
                 </div>
                 <Link

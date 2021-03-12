@@ -136,7 +136,6 @@ const Content = ({ idx, user, userData }) => {
   const [searchResults, setSearchResults] = useState(false);
   const [, setToast] = useToasts();
 
-  console.log('SEARCHRESULTS', searchResults);
   useEffect(() => {
     async function load() {
       if (idx && user === 2) {
@@ -175,7 +174,6 @@ const Content = ({ idx, user, userData }) => {
 
         setUserEmail(user.name);
         setReciverDetails(user);
-        console.log('User EMAILLLLL', userEmail);
       } else {
         setLoading(false);
         setToast({
