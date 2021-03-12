@@ -48,16 +48,16 @@ const connectUser = async (provider) => {
   const data = await idx.get(definitions.profile, idx.id)
   setUserData(threadData)
   setUser((threadData && data) ? 2 : 1)
-  
+  return {idx, identity, threadData}
 }
 
-const handleMagicLinkWeb3 = async (provider) => {
+/*const handleMagicLinkWeb3 = async (provider) => {
   try{
     connectUser(provider)
   }catch(err){
     console.log(err)
   }
-}
+}*/
 
 
 pageProps['connectUser'] = connectUser
@@ -70,7 +70,7 @@ pageProps['connectUser'] = connectUser
           provider={provider}
           toggleDarkMode={toggleDarkMode}
           connectUser={connectUser}
-          handleMagicLinkWeb3={handleMagicLinkWeb3}
+          handleMagicLinkWeb3={connectUser}
           user={user}
           idx={idx}
           userData={userData}

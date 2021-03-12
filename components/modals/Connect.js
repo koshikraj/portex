@@ -4,13 +4,13 @@ import Router from 'next/router';
 import { Magic } from 'magic-sdk';
 import { OAuthExtension } from '@magic-ext/oauth';
 import { useUser } from '../../lib/hooks';
-import {ethers} from "ethers"
+import { ethers } from 'ethers';
 
 function Connect({ modal, setModal, connectUser, userConnected }) {
   const [isRedirecting, setIsRedirecting] = useState(false);
 
   const [loading, setLoading] = useState(false);
-  
+
   const handler = () => setModal(true);
   const closeHandler = (event) => {
     setModal(false);
@@ -29,7 +29,6 @@ function Connect({ modal, setModal, connectUser, userConnected }) {
       );
     magic?.preload();
   }, [magic]);
-
 
   async function handleLoginWithEmail(email) {
     try {
@@ -54,17 +53,18 @@ function Connect({ modal, setModal, connectUser, userConnected }) {
 
   // try to login with webauthn, if that fails, revert to registering with webauthn
   async function authenticateWithServer(didToken) {
-    const res = await fetch(`${process.env.NEXT_PUBLIC_MIDDLEWARE_URL}/api/login`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: 'Bearer ' + didToken,
-      },
-    });
+    const res = await fetch(
+      `${process.env.NEXT_PUBLIC_MIDDLEWARE_URL}/api/login`,
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: 'Bearer ' + didToken,
+        },
+      }
+    );
     res.status === 200 && Router.push('/');
   }
-
-
 
   return (
     <div>
@@ -72,33 +72,59 @@ function Connect({ modal, setModal, connectUser, userConnected }) {
         {/* <Button auto onClick={handler}>
           Show Modal
         </Button> */}
-        <Modal open={modal} onClose={closeHandler}>
+        <Modal open={modal} onClose={closeHandler} disableBackdropClick={true}>
           <Modal.Title>Login to Portex</Modal.Title>
 
           <Modal.Content>
-          <Row gap={.8} justify="center" style={{ marginBottom: '15px' }}>
-          <Button type="secondary" icon={<Image width="25" height="25" src="/assets/metamask.png" />} ghost onClick={() => {connectUser(null), setModal(false), setLoading(true)}}>MetaMask</Button>
-          </Row>
-          <Row gap={.8} justify="center" style={{ marginBottom: '15px' }}>
-          <Button type="secondary" icon={<Image width="25" height="25" src="/assets/github.png" />} ghost onClick={() => {
-            handleLoginWithSocial('github')
-          }}>GitHub</Button>
-          </Row>
-          <Row gap={.8} justify="center" style={{ marginBottom: '15px' }}>
-          <Button type="secondary" icon={<Image width="25" height="25" src="/assets/google.png" />} ghost onClick={() => {
-            handleLoginWithSocial('google')
-          }}>Google</Button>
-          </Row>
+            <Row gap={0.8} justify='center' style={{ marginBottom: '15px' }}>
+              <Button
+                type='secondary'
+                icon={
+                  <Image width='25' height='25' src='/assets/metamask.png' />
+                }
+                ghost
+                onClick={() => {
+                  connectUser(null), setModal(false), setLoading(true);
+                }}
+              >
+                MetaMask
+              </Button>
+            </Row>
+            <Row gap={0.8} justify='center' style={{ marginBottom: '15px' }}>
+              <Button
+                type='secondary'
+                icon={<Image width='25' height='25' src='/assets/github.png' />}
+                ghost
+                onClick={() => {
+                  handleLoginWithSocial('github');
+                }}
+              >
+                GitHub
+              </Button>
+            </Row>
+            <Row gap={0.8} justify='center' style={{ marginBottom: '15px' }}>
+              <Button
+                type='secondary'
+                icon={<Image width='25' height='25' src='/assets/google.png' />}
+                ghost
+                onClick={() => {
+                  handleLoginWithSocial('google');
+                }}
+              >
+                Google
+              </Button>
+            </Row>
           </Modal.Content>
+          <Modal.Action onClick={closeHandler} />
         </Modal>
         <Modal open={loading && !userConnected} disableBackdropClick>
           <Modal.Title>Login to Portex</Modal.Title>
 
           <Modal.Content>
-        <Row style={{ padding: '10px 0'}}>
-         <Loading>Connecting user </Loading>
-        </Row> 
-        </Modal.Content>
+            <Row style={{ padding: '10px 0' }}>
+              <Loading>Connecting user </Loading>
+            </Row>
+          </Modal.Content>
         </Modal>
       </div>
     </div>
