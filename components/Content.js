@@ -143,8 +143,7 @@ const Content = ({ idx, user, userData }) => {
         setRequests(userData.requests);
         setSharedPortfolio(userData.sharedData);
 
-        const user = JSON.parse(localStorage.getItem('USER'));
-        const { userArray, caller } = await getAllUsers(user.did);
+        const { userArray, caller } = await getAllUsers(userData.did);
         console.log('caller', caller);
         setCaller(userData);
         setUserArray(userArray);
@@ -209,13 +208,12 @@ const Content = ({ idx, user, userData }) => {
       heading: 'Accept Portfolio Request',
       content: 'Accepting portfolio request',
     });
-    const docId = localStorage.getItem('docId');
-    const user = JSON.parse(localStorage.getItem('USER'));
-    const dec = await idx.ceramic.did.decryptDagJWE(user.aesKey);
+
+    const dec = await idx.ceramic.did.decryptDagJWE(userData.aesKey);
     const encKey = await idx.ceramic.did.createDagJWE(dec, [
       receiver.senderDid,
     ]);
-    await sharePortfolio(caller, receiver, docId, encKey, receiver.requestId);
+    await sharePortfolio(caller, receiver, userData.docID, encKey, receiver.requestId);
     setLoading(false);
   };
 

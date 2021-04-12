@@ -7,7 +7,7 @@ import AddressModal from './AddressModal';
 import EditProfile from '../modals/EditProfile';
 import Loader from '../modals/Loader';
 import { definitions } from '../../utils/config.json';
-import { decryptData, encryptData } from '../../lib/threadDb';
+import { decryptData, encryptData, updateDocID } from '../../lib/threadDb';
 
 const useStyles = makeStyles((ui) => ({
   root: {
@@ -106,7 +106,8 @@ const Profile = ({ idx, userData }) => {
     async function fetch() {
       try {
         if (idx) {
-          const res = JSON.parse(localStorage.getItem('USER'));
+          const res = userData;
+          console.log(userData)
           const dec = await idx.ceramic.did.decryptDagJWE(res.aesKey);
           setAesKey(dec);
           const [addressList] = await Promise.all([
@@ -148,7 +149,8 @@ const Profile = ({ idx, userData }) => {
     const docId = await idx.set(definitions.portfolio, {
       portfolio: encryptedData.toString('hex'),
     });
-    localStorage.setItem('docId', docId.toString());
+    updateDocID(userData.email, docId.toString());
+    
     setLoading(false);
   };
 

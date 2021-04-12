@@ -41,9 +41,6 @@ const connectUser = async (provider) => {
     //call middleWare
     setCeramic(ceramic)
     threadData = await getLoginUser(idx.id)
-    if (!localStorage.getItem("USER")) {
-      localStorage.setItem("USER", JSON.stringify(threadData))
-    }
   }
   const data = await idx.get(definitions.profile, idx.id)
   setUserData(threadData)

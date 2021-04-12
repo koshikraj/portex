@@ -141,7 +141,7 @@ const Menu = ({ toggleDarkMode, connectUser, provider, user }) => {
               {isDark ? <Icons.Sun size={16} /> : <Icons.Moon size={16} />}
             </Button>
 
-            <Button auto type='abort' onClick={setModal}>
+            <Button auto type='abort' onClick={ user === 2 ? () => {location.reload()} : setModal}>
               {user === 2 ? 'Disconnect' : 'Connect'}
             </Button>
           </div>
